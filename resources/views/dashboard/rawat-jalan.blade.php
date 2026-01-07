@@ -49,19 +49,19 @@
                                     <td>Pendaftaran Kunjuangan Rawat Jalan</td>
                                     <td>Pembuatan Kunjungan Baru</td>
                                     <td>Encounter</td>
-                                    <td>{{$pembuatan_kunjungan_baru->noreg}}</td>
-                                    <td>{{$pembuatan_kunjungan_baru->created_at->format('d-M-Y H:i:s')}}_WIB</td>
-                                    <td>{{$log_pembuatan_kunjungan_baru->noreg}}</td>
-                                    <td>{{$log_pembuatan_kunjungan_baru->created_at->format('d-M-Y H:i:s')}}_WIB</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
                                 </tr>
                                 <tr class="text-center bg-primary">
                                     <td>Pendaftaran Kunjuangan Rawat Jalan</td>
                                     <td>Masuk Ke Ruang Pemeriksaan</td>
                                     <td>Encounter</td>
-                                    <td>{{$rj_masuk_ruang->noreg}}</td>
-                                    <td>{{$rj_masuk_ruang->created_at->format('d-M-Y H:i:s')}}_WIB</td>
-                                    <td>{{$rj_masuk_ruang_log->noreg}}</td>
-                                    <td>{{$rj_masuk_ruang_log->created_at->format('d-M-Y H:i:s')}}_WIB</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
                                 </tr>
 
                                 <tr class="text-center bg-secondary">
@@ -95,20 +95,20 @@
                                     <td>Anamnesis</td>
                                     <td>Riwayat Pengobatan</td>
                                     <td>Medication Statment</td>
-                                    <td>{{$riwayat_pengobatan->noreg}}</td>
-                                    <td>{{$riwayat_pengobatan->created_at->format('d-M-Y H:i:s')}}_WIB</td>
-                                    <td>{{$log_riwayat_pengobatan->noreg}}</td>
-                                    <td>{{$log_riwayat_pengobatan->created_at->format('d-M-Y H:i:s')}}_WIB</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
                                 </tr>
 
                                 <tr class="text-center bg-success">
                                     <td>Hasil Pemeriksaan Fisik</td>
                                     <td>Pemeriksaan Tanda-Tanda Vital</td>
                                     <td>Observation</td>
-                                    <td>{{$pemeriksaan_tanda_tanda_vital->noreg}}</td>
-                                    <td>{{$pemeriksaan_tanda_tanda_vital->created_at->format('d-M-Y H:i:s')}}_WIB</td>
-                                    <td>{{$log_pemeriksaan_tanda_tanda_vital->noreg}}</td>
-                                    <td>{{$log_pemeriksaan_tanda_tanda_vital->created_at->format('d-M-Y H:i:s')}}_WIB</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
                                 </tr>
                                 <tr class="text-center bg-success">
                                     <td>Hasil Pemeriksaan Fisik</td>
@@ -153,10 +153,10 @@
                                     <td>Rencana Rawat Pasien</td>
                                     <td>Rencana rawat Pasien</td>
                                     <td>Careplan</td>
-                                    <td>{{$rencana_rawat_pasien->noreg}}</td>
-                                    <td>{{$rencana_rawat_pasien->created_at->format('d-M-Y H:i:s')}}_WIB</td>
-                                    <td>{{$log_rencana_rawat_pasien->noreg}}</td>
-                                    <td>{{$log_rencana_rawat_pasien->created_at->format('d-M-Y H:i:s')}}_WIB</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
                                 </tr>
 
                                 <tr class="text-center bg-info">
@@ -473,10 +473,10 @@
                                         <span class="badge bg-danger">Service Request</span>
                                     </td>
                                     <td>Service Request</td>
-                                    <td>{{$laboratorium_paket_pemeriksaan_service_request->noreg}}</td>
-                                    <td>{{$laboratorium_paket_pemeriksaan_service_request->created_at->format('d-M-Y H:i:s')}}_WIB</td>
-                                    <td>{{$log_laboratorium_paket_pemeriksaan_service_request->noreg}}</td>
-                                    <td>{{$log_laboratorium_paket_pemeriksaan_service_request->created_at->format('d-M-Y H:i:s')}}_WIB</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
                                 </tr>
                                 <tr class="text-center bg-info">
                                     <td>Pemeriksaan Penunjang</td>
@@ -651,10 +651,10 @@
                                         Diagnosis
                                     </td>
                                     <td>Condition</td>
-                                    <td>{{$diagnosis->noreg}}</td>
-                                    <td>{{$diagnosis->created_at->format('d-M-Y H:i:s')}}_WIB</td>
-                                    <td>{{$log_diagnosis->noreg}}</td>
-                                    <td>{{$log_diagnosis->created_at->format('d-M-Y H:i:s')}}_WIB</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
                                 </tr>
 
                                 <tr class="text-center bg-dark">
@@ -663,10 +663,10 @@
                                         Composition
                                     </td>
                                     <td>Composition</td>
-                                    <td>{{$diet->noreg}}</td>
-                                    <td>{{$diet->created_at->format('d-M-Y H:i:s')}}_WIB</td>
-                                    <td>{{$log_diet->noreg}}</td>
-                                    <td>{{$log_diet->created_at->format('d-M-Y H:i:s')}}_WIB</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
                                 </tr>
 
                                 <tr class="text-center bg-primary">
@@ -675,10 +675,10 @@
                                         Edukasi
                                     </td>
                                     <td>Procedure</td>
-                                    <td>{{$edukasi->noreg}}</td>
-                                    <td>{{$edukasi->created_at->format('d-M-Y H:i:s')}}_WIB</td>
-                                    <td>{{$log_edukasi->noreg}}</td>
-                                    <td>{{$log_edukasi->created_at->format('d-M-Y H:i:s')}}_WIB</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
                                 </tr>
                                 <tr class="text-center bg-primary">
                                     <td>Tata Laksana</td>
@@ -688,9 +688,9 @@
                                     </td>
                                     <td>Medication</td>
                                     <td>-</td>
-                                    <td>{{$obat_peresepan_obat_medication->created_at->format('d-M-Y H:i:s')}}_WIB</td>
+                                    <td></td>
                                     <td>-</td>
-                                    <td>{{$obat_peresepan_obat_medication->created_at->format('d-M-Y H:i:s')}}_WIB</td>
+                                    <td></td>
                                 </tr>
                                 <tr class="text-center bg-primary">
                                     <td>Tata Laksana</td>
@@ -699,10 +699,10 @@
                                         <span class="badge bg-success">Peresepan Obat</span><br>
                                     </td>
                                     <td>Medication Request</td>
-                                    <td>{{$obat_peresepan_obat_medication_request->noreg}}</td>
-                                    <td>{{$obat_peresepan_obat_medication_request->created_at->format('d-M-Y H:i:s')}}_WIB</td>
-                                    <td>{{$log_obat_peresepan_obat_medication_request->noreg}}</td>
-                                    <td>{{$log_obat_peresepan_obat_medication_request->created_at->format('d-M-Y H:i:s')}}_WIB</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
                                 </tr>
                                 <tr class="text-center bg-primary">
                                     <td>Tata Laksana</td>
@@ -710,10 +710,10 @@
                                         Pengkajian Resep
                                     </td>
                                     <td>Quesionare Response</td>
-                                    <td>{{$pengkajian_resep->noreg}}</td>
-                                    <td>{{$pengkajian_resep->created_at->format('d-M-Y H:i:s')}}_WIB</td>
-                                    <td>{{$log_pengkajian_resep->noreg}}</td>
-                                    <td>{{$log_pengkajian_resep->created_at->format('d-M-Y H:i:s')}}_WIB</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
                                 </tr>
                                 <tr class="text-center bg-primary">
                                     <td>Tata Laksana</td>

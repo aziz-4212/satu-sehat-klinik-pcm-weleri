@@ -56,11 +56,11 @@
         <li class="nav-item dropdown">
             <a class="nav-link text-light" data-toggle="dropdown" href="#" title="Profil Pengguna">
                 <i class="fas fa-user-circle mr-1"></i>
-                <span class="d-none d-md-inline">{{ auth()->user()->user_log->USFULLNM ?? 'User' }}</span>
+                <span class="d-none d-md-inline">{{ auth()->user()->name ?? 'User' }}</span>
             </a>
             <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
                 <div class="dropdown-header bg-light">
-                    <strong>{{ auth()->user()->user_log->USFULLNM ?? 'User' }}</strong>
+                    <strong>{{ auth()->user()->name ?? 'User' }}</strong>
                     <small class="text-muted d-block">Administrator</small>
                 </div>
                 <div class="dropdown-divider"></div>

@@ -16,15 +16,13 @@ Route::get('/login', [App\Http\Controllers\AuthController::class, 'login'])->nam
 Route::post('/login', [App\Http\Controllers\AuthController::class, 'post_login'])->name('login-post');
 Route::get('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->name('logout');
 
-// Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::get('/', function () {
         return view('home');
     })->name('home');
     Route::resource('/config', App\Http\Controllers\ConfigsController::class);
     Route::resource('/auth', App\Http\Controllers\AuthController::class);
     Route::get('/dashboard-rawat-jalan', [App\Http\Controllers\AuthController::class, 'dashboard_rawat_jalan'])->name('dashboard.rawat-jalan');
-    Route::get('/dashboard-rawat-inap', [App\Http\Controllers\AuthController::class, 'dashboard_rawat_inap'])->name('dashboard.rawat-inap');
-    Route::get('/dashboard-igd', [App\Http\Controllers\AuthController::class, 'dashboard_igd'])->name('dashboard.igd');
     Route::get('/kyc', [App\Http\Controllers\AuthController::class, 'kyc'])->name('dashboard.kyc');
     // ===========modul Rawat Jalan========================
         Route::get('/rawat-jalan/menu', [App\Http\Controllers\RawatJalanController::class, 'menu'])->name('rawat-jalan.menu');
@@ -77,20 +75,6 @@ Route::get('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->n
     Route::resource('/master-mapmr-loinc', App\Http\Controllers\MasterMapmrLoincController::class);
     Route::get('/encounter', [App\Http\Controllers\EncounterController::class, 'index'])->name('encounter.index');
 
-    Route::get('/condition', [App\Http\Controllers\ConditionController::class, 'index'])->name('condition.index');
-    Route::get('/condition/create', [App\Http\Controllers\ConditionController::class, 'create'])->name('condition.create');
-    Route::post('/condition/create/post', [App\Http\Controllers\ConditionController::class, 'store'])->name('condition.store');
-    Route::get('/condition/pasien-pulang', [App\Http\Controllers\ConditionController::class, 'create_pasien_pulang'])->name('condition.create-pasien-pulang');
-    Route::post('/condition/pasien-pulang/post', [App\Http\Controllers\ConditionController::class, 'store_pasien_pulang'])->name('condition.store-pasien-pulang');
-
-    Route::get('/allergy-intolerance', [App\Http\Controllers\AllergyIntoleranceController::class, 'index'])->name('allergy-intolerance.index');
-    Route::get('/allergy-intolerance/create', [App\Http\Controllers\AllergyIntoleranceController::class, 'create'])->name('allergy-intolerance.create');
-    Route::post('/allergy-intolerance/create/post', [App\Http\Controllers\AllergyIntoleranceController::class, 'store'])->name('allergy-intolerance.store');
-
-    Route::get('/observation', [App\Http\Controllers\ObservationController::class, 'index'])->name('observation.index');
-    Route::get('/observation/create', [App\Http\Controllers\ObservationController::class, 'create'])->name('observation.create');
-    Route::post('/observation/create/post', [App\Http\Controllers\ObservationController::class, 'store'])->name('observation.store');
-
     Route::get('/patient', [App\Http\Controllers\PatientController::class, 'index'])->name('patient.index');
     Route::get('/patient/create', [App\Http\Controllers\PatientController::class, 'create'])->name('patient.create');
     Route::post('/patient/create/post', [App\Http\Controllers\PatientController::class, 'store'])->name('patient.store');
@@ -117,29 +101,5 @@ Route::get('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->n
     Route::get('/medication/create', [App\Http\Controllers\MedicationController::class, 'create'])->name('medication.create');
     Route::post('/medication/create/post', [App\Http\Controllers\MedicationController::class, 'store'])->name('medication.store');
 
-
-    //=======================================Resume Medis Rawat Jalan========================================================
-    Route::prefix('resume-medis-rawat-jalan')->group(function () {
-        Route::get('/pendaftaran-pendataan-pasien', [App\Http\Controllers\ResumeMedisRawatJalanController::class, 'pendaftaran_pendataan_pasien_index'])->name('resume-medis-rawat-jalan.pendaftaran-pendataan-pasien.index');
-        Route::post('/pendaftaran-pendataan-pasien/store', [App\Http\Controllers\ResumeMedisRawatJalanController::class, 'pendaftaran_pendataan_pasien_store'])->name('resume-medis-rawat-jalan.pendaftaran-pendataan-pasien.store');
-
-        Route::get('/keluhan-utama', [App\Http\Controllers\ResumeMedisRawatJalanController::class, 'keluhan_utama_index'])->name('resume-medis-rawat-jalan.keluhan-utama.index');
-        Route::post('/keluhan-utama/store', [App\Http\Controllers\ResumeMedisRawatJalanController::class, 'keluhan_utama_store'])->name('resume-medis-rawat-jalan.keluhan-utama.store');
-
-        Route::get('/riwayat-alergi', [App\Http\Controllers\ResumeMedisRawatJalanController::class, 'riwayat_alergi_index'])->name('resume-medis-rawat-jalan.riwayat-alergi.index');
-        Route::post('/riwayat-alergi/store', [App\Http\Controllers\ResumeMedisRawatJalanController::class, 'riwayat_alergi_store'])->name('resume-medis-rawat-jalan.riwayat-alergi.store');
-
-        Route::get('/hasil-pemeriksaan-fisik', [App\Http\Controllers\ResumeMedisRawatJalanController::class, 'hasil_pemeriksaan_fisik_index'])->name('resume-medis-rawat-jalan.hasil-pemeriksaan-fisik.index');
-        Route::post('/hasil-pemeriksaan-fisik/store', [App\Http\Controllers\ResumeMedisRawatJalanController::class, 'hasil_pemeriksaan_fisik_store'])->name('resume-medis-rawat-jalan.hasil-pemeriksaan-fisik.store');
-
-        // +++++++++++++++++++++++++++++++++++Rujukan Laboratoriom++++++++++++++++++++++++++++
-            Route::get('/laboratorium/permintaan-pemeriksaan-penunjang', [App\Http\Controllers\ResumeMedisRawatJalanController::class, 'permintaan_pemeriksaan_penunjang_laboratorium_index'])->name('permintaan-pemeriksaan-penunjang-laboratorium.index');
-            Route::post('/laboratorium/permintaan-pemeriksaan-penunjang/store', [App\Http\Controllers\ResumeMedisRawatJalanController::class, 'permintaan_pemeriksaan_penunjang_laboratorium_store'])->name('permintaan-pemeriksaan-penunjang-laboratorium.store');
-
-        // +++++++++++++++++++++++++++++++++++End Rujukan Laboratoriom++++++++++++++++++++++++
-
-        Route::get('/peresepan-obat', [App\Http\Controllers\ResumeMedisRawatJalanController::class, 'peresepan_obat_index'])->name('resume-medis-rawat-jalan.peresepan-obat.index');
-        Route::post('/peresepan-obat/store', [App\Http\Controllers\ResumeMedisRawatJalanController::class, 'peresepan_obat_store'])->name('resume-medis-rawat-jalan.peresepan-obat.store');
-    });
     Route::get('/kyc', [App\Http\Controllers\AuthController::class, 'kyc'])->name('dashboard.kyc');
-// });
+});

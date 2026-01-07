@@ -66,93 +66,9 @@ class AuthController extends Controller
         $this->config = new Config;
     }
 
-    public function index()
-    {
-        dd($this->config->auth());
-    }
-
     public function dashboard_rawat_jalan()
     {
-        $pembuatan_kunjungan_baru = MappingKunjunganPoli::select('noreg', 'created_at')->latest()->first();
-        $log_pembuatan_kunjungan_baru = LogEncounter::select('noreg', 'created_at')->latest()->first();
-
-        $rj_masuk_ruang = RjMasukRuang::select('noreg', 'created_at')->latest()->first();
-        $rj_masuk_ruang_log = RjMasukRuangLog::select('noreg', 'created_at')->latest()->first();
-
-        $diagnosis = Diagnosis::select('noreg', 'created_at')->latest()->first();
-        $log_diagnosis = logDiagnosis::select('noreg', 'created_at')->latest()->first();
-
-        $riwayat_pengobatan = MedicationStatementModel::select('noreg', 'created_at')->latest()->first();
-        $log_riwayat_pengobatan = LogMedicationStatement::select('noreg', 'created_at')->latest()->first();
-
-        $pemeriksaan_tanda_tanda_vital = Observation::select('noreg', 'created_at')->latest()->first();
-        $log_pemeriksaan_tanda_tanda_vital = LogObservation::select('noreg', 'created_at')->latest()->first();
-
-        $laboratorium_paket_pemeriksaan_service_request = ServiceRequest::select('noreg', 'created_at')->latest()->first();
-        $log_laboratorium_paket_pemeriksaan_service_request = LogServiceRequest::select('noreg', 'created_at')->latest()->first();
-
-        $edukasi = ProcedureEdukasiNutrisi::select('noreg', 'created_at')->latest()->first();
-        $log_edukasi = LogProcedureEdukasiNutrisi::select('noreg', 'created_at')->latest()->first();
-
-        $obat_peresepan_obat_medication = MasterKfaObat::select('created_at')->latest()->first();
-
-        $obat_peresepan_obat_medication_request = MedicationRequestModel::select('noreg', 'created_at')->latest()->first();
-        $log_obat_peresepan_obat_medication_request = LogMedicationRequest::select('noreg', 'created_at')->latest()->first();
-
-        $pengkajian_resep = QuestionnaireResponseModel::select('noreg', 'created_at')->latest()->first();
-        $log_pengkajian_resep = LogQuestionnaireResponse::select('noreg', 'created_at')->latest()->first();
-
-        $diet = CompositionModel::select('noreg', 'created_at')->latest()->first();
-        $log_diet = LogComposition::select('noreg', 'created_at')->latest()->first();
-
-        $rencana_rawat_pasien = CareplanRencanaRawatPasienModel::select('noreg', 'created_at')->latest()->first();
-        $log_rencana_rawat_pasien = LogCareplanRencanaRawatPasien::select('noreg', 'created_at')->latest()->first();
-        return view('dashboard.rawat-jalan', compact(
-            'pembuatan_kunjungan_baru', 'log_pembuatan_kunjungan_baru',
-            'rj_masuk_ruang', 'rj_masuk_ruang_log',
-            'diagnosis', 'log_diagnosis',
-            'riwayat_pengobatan', 'log_riwayat_pengobatan',
-            'pemeriksaan_tanda_tanda_vital', 'log_pemeriksaan_tanda_tanda_vital',
-            'laboratorium_paket_pemeriksaan_service_request', 'log_laboratorium_paket_pemeriksaan_service_request',
-            'edukasi', 'log_edukasi',
-            'obat_peresepan_obat_medication',
-            'obat_peresepan_obat_medication_request', 'log_obat_peresepan_obat_medication_request',
-            'pengkajian_resep', 'log_pengkajian_resep',
-            'diet', 'log_diet',
-            'rencana_rawat_pasien', 'log_rencana_rawat_pasien'
-        ));
-    }
-
-
-
-    public function dashboard_rawat_inap()
-    {
-        $pembuatan_kunjungan_baru = MappingKunjunganInap::select('noreg', 'created_at')->latest()->first();
-        $log_pembuatan_kunjungan_baru = LogEncounterInap::select('noreg', 'created_at')->latest()->first();
-
-        $rencana_rawat_pasien = RIRencanaRawatPasien::select('noreg', 'created_at')->latest()->first();
-        $log_rencana_rawat_pasien = RIRencanaRawatPasienLog::select('noreg', 'created_at')->latest()->first();
-
-        $diagnosis = RIDiagnosis::select('noreg', 'created_at')->latest()->first();
-        $log_diagnosis = RIDiagnosisLog::select('noreg', 'created_at')->latest()->first();
-        return view('dashboard.rawat-inap', compact(
-            'pembuatan_kunjungan_baru', 'log_pembuatan_kunjungan_baru',
-            'rencana_rawat_pasien', 'log_rencana_rawat_pasien',
-            'diagnosis', 'log_diagnosis'
-        ));
-    }
-
-    public function dashboard_igd()
-    {
-        $pembuatan_kunjungan_baru = MappingKunjunganIgd::select('noreg', 'created_at')->latest()->first();
-        $log_pembuatan_kunjungan_baru = LogEncounterIgd::select('noreg', 'created_at')->latest()->first();
-
-        $sarana_transportasi_kedatangan = IGDSaranaTransportasiKedatangan::select('noreg', 'created_at')->latest()->first();
-        $log_sarana_transportasi_kedatangan = IGDSaranaTransportasiKedatanganLog::select('noreg', 'created_at')->latest()->first();
-        return view('dashboard.igd', compact(
-            'pembuatan_kunjungan_baru', 'log_pembuatan_kunjungan_baru',
-            'sarana_transportasi_kedatangan', 'log_sarana_transportasi_kedatangan'
-        ));
+        return view('dashboard.rawat-jalan');
     }
     // ====================    KYC    ====================
         public function kyc()
@@ -366,20 +282,22 @@ class AuthController extends Controller
         {
             return view('auth.login');
         }
+
         public function post_login(Request $request)
         {
-            $pass = $request->password;
-            $user = User::where('USERLOGNM', $request->username)
-                    ->whereHas('user_log', function ($query) use ($pass) {
-                        $query->where('USPASS', $pass);
-                    })->first();
-            $user = User::where('USERLOGNM', $request->username)->first();
-            if ($user) {
-                Auth::login($user);
-                return redirect()->intended();
-            }
-            return redirect('/login')->with('error', 'Username atau password salah.');
+            $request->validate([
+                'username' => 'required|string',
+                'password' => 'required|string',
+            ]);
 
+            $user = User::where('username', $request->username)->first();
+
+            if ($user && \Hash::check($request->password, $user->password)) {
+                Auth::login($user);
+                return redirect()->intended('/');
+            }
+
+            return redirect('/login')->with('error', 'Username atau password salah.');
         }
 
         public function logout()
