@@ -86,20 +86,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/practitioner/create', [App\Http\Controllers\PractitionerController::class, 'create'])->name('practitioner.create');
     Route::post('/practitioner/create/post', [App\Http\Controllers\PractitionerController::class, 'store'])->name('practitioner.store');
 
-    Route::get('/organization', [App\Http\Controllers\OrganizationController::class, 'index'])->name('organization.index');
-    Route::get('/organization/create', [App\Http\Controllers\OrganizationController::class, 'create'])->name('organization.create');
-    Route::post('/organization/create/post', [App\Http\Controllers\OrganizationController::class, 'store'])->name('organization.store');
-
-    Route::get('/location', [App\Http\Controllers\locationController::class, 'index'])->name('location.index');
-    Route::get('/location/create', [App\Http\Controllers\locationController::class, 'create'])->name('location.create');
-    Route::post('/location/create/post', [App\Http\Controllers\locationController::class, 'store'])->name('location.store');
-
     Route::resource('/master-satuan-obat', App\Http\Controllers\MasterSatuanObatController::class);
     Route::resource('/master-kfa-obat', App\Http\Controllers\MasterKfaObatController::class);
 
     Route::get('/medication', [App\Http\Controllers\MedicationController::class, 'index'])->name('medication.index');
     Route::get('/medication/create', [App\Http\Controllers\MedicationController::class, 'create'])->name('medication.create');
     Route::post('/medication/create/post', [App\Http\Controllers\MedicationController::class, 'store'])->name('medication.store');
-
-    Route::get('/kyc', [App\Http\Controllers\AuthController::class, 'kyc'])->name('dashboard.kyc');
 });

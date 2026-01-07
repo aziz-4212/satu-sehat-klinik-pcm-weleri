@@ -104,20 +104,6 @@
                                     <p>Data Dokter</p>
                                 </a>
                             </li>
-                            <li class="nav-item">
-                                <a href="{{ route('organization.index') }}"
-                                    class="nav-link{{ request()->is(['organization', 'organization/*']) ? ' active' : '' }}">
-                                    <i class="far fa-circle nav-icon text-info"></i>
-                                    <p>Organisasi</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ route('location.index') }}"
-                                    class="nav-link{{ request()->is(['location', 'location/*']) ? ' active' : '' }}">
-                                    <i class="far fa-circle nav-icon text-danger"></i>
-                                    <p>Lokasi</p>
-                                </a>
-                            </li>
                         </ul>
                     </li>
 
