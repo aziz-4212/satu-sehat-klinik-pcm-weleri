@@ -469,6 +469,7 @@ class RawatJalanController extends Controller
                 }
 
                 $registrasi_pasien_terakhir = $registrasi_pasien_terakhir+1;
+                // $registrasi_pasien_terakhir = 17;
                 $registrasi_pasien = Rekam::where('id', $registrasi_pasien_terakhir)->first();
 
                 if ($registrasi_pasien == null) {
@@ -563,6 +564,16 @@ class RawatJalanController extends Controller
                     $mapping_kunjungan_poli->rekam_id = $registrasi_pasien_terakhir;
                     $mapping_kunjungan_poli->encounter = $encounter->id;
                     $mapping_kunjungan_poli->save();
+
+                    // ===========================Masuk ke Ruang Pemeriksaan===========================
+                        $encounter      = $encounter->id;
+                        // $encounter      = "fe40da59-beba-447d-bbbd-4f0b41e3d5da";
+                        $datetime       = $date;
+                        $datetime_end   = date('Y-m-d', strtotime($tanggal)).'T'.date('H:i:s', strtotime($jam . ' +15 minutes')).'.000+07:00';
+                        $id_location    = "2b21293b-3cab-4c46-b7a0-9289e2526f2c";
+                        $name_location  = "klinik dokter umum";
+                        $this->masuk_ke_ruang_pemeriksaan_api($registrasi_pasien_terakhir, $encounter, $id_patient, $name_patient, $id_practitioner, $name_practitioner, $datetime, $datetime_end, $id_location, $name_location);
+                    // ===========================Masuk ke Ruang Pemeriksaan===========================
                 }else {
                     $log_encounter = new RJ_02_A_Kunjungan_Baru_Log();
                     $log_encounter->rekam_id = $registrasi_pasien_terakhir;
@@ -586,201 +597,32 @@ class RawatJalanController extends Controller
             return view('rawat-jalan.02-pendaftaran-kunjungan-rawat-jalan.pembuatan-kunjungan-baru.index', compact('data'));
         }
 
-        public function masuk_ke_ruang_pemeriksaan_api(Request $request){
+        public function masuk_ke_ruang_pemeriksaan_api($rekam_id, $encounter_id, $id_patient, $name_patient, $id_practitioner, $name_practitioner, $datetime, $datetime_end, $id_location, $name_location){
             set_time_limit((int) 0);
-            $rj_masuk_ruang = RJ_02_B_Masuk_Ruang::orderBy('noreg', 'desc')->pluck('noreg')->first();
-            $log_rj_masuk_ruang = RJ_02_B_Masuk_Ruang_Log::orderBy('noreg', 'desc')->pluck('noreg')->first();
-
-            if ($rj_masuk_ruang == null && $log_rj_masuk_ruang == null) {
-                $noreg_terakhir = RJ_02_A_Kunjungan_Baru::orderBy('noreg', 'asc')->pluck('noreg')->first();
-            }elseif ($rj_masuk_ruang > $log_rj_masuk_ruang) {
-                $noreg_terakhir = $rj_masuk_ruang;
-            }elseif ($rj_masuk_ruang < $log_rj_masuk_ruang) {
-                $noreg_terakhir = $log_rj_masuk_ruang;
-            }elseif ($rj_masuk_ruang == $log_rj_masuk_ruang) {
-                $noreg_terakhir = $rj_masuk_ruang;
-            }
-
-            $noreg_terakhir = $noreg_terakhir+1;
-            $noreg_tanggal_depan = (substr($noreg_terakhir, 0, -4)+1)."0000";
-            $data_tanggal_terakhir = RJ_02_A_Kunjungan_Baru::where('noreg', "<",$noreg_tanggal_depan)->orderBy('noreg', 'desc')->pluck('noreg')->first();
-            if ($noreg_terakhir > $data_tanggal_terakhir) {
-                $noreg_terakhir = $noreg_tanggal_depan+1;
-            }
-
-            //berhentikan sebelum noreg hari sekarang
-            $now = Carbon::now()->setTimezone('Asia/Jakarta')->format('ymd');
-            $noreg_batas = (Integer)($now . '0000');
-            if ($noreg_terakhir > $noreg_batas) {
-                return response()->json([
-                    'noreg' => $noreg_terakhir,
-                    'message' => "Noreg Dalam Pelayanan",
-                    'nama schedule' => 'Encounter Masuk Ruang'
-                ], 200);
-            }
-
-            if (substr($noreg_terakhir, 2, 4) == '1232') {
-                $noreg_terakhir += 100000000;
-                $noreg_terakhir = substr_replace($noreg_terakhir, '0101', 2, 4);
-            }
-
-            $data_terbesar = RJ_02_A_Kunjungan_Baru::orderBy('noreg', 'desc')->pluck('noreg')->first();
-            if ($noreg_terakhir > $data_terbesar) {
-                return response()->json([
-                    'noreg' => $noreg_terakhir,
-                    'message' => "Noreg Belum Terdaftar",
-                    'nama schedule' => 'Encounter Masuk Ruang'
-                ], 200);
-            }
-            // $noreg_terakhir = '2312300005';
-            $mapping_kunjungan_poli = RJ_02_A_Kunjungan_Baru::where('noreg', $noreg_terakhir)->first();
-            if ($mapping_kunjungan_poli == null) {
-                $log_rj_masuk_ruang = new RJ_02_B_Masuk_Ruang_Log();
-                $log_rj_masuk_ruang->noreg = $noreg_terakhir;
-                $log_rj_masuk_ruang->ket_log = 'Mapping kunjungan poli tidak ditemukan';
-                $log_rj_masuk_ruang->save();
-                return response()->json([
-                    'noreg' => $noreg_terakhir,
-                    'message' => "Mapping kunjungan poli tidak ditemukan",
-                    'nama schedule' => 'Encounter Masuk Ruang'
-                ], 200);
-            }
-            $registrasi_pasien = RegistrasiPasien::where('NOREG', $noreg_terakhir)->first();
-            if ($registrasi_pasien == null) {
-                $log_rj_masuk_ruang = new RJ_02_B_Masuk_Ruang_Log();
-                $log_rj_masuk_ruang->noreg = $noreg_terakhir;
-                $log_rj_masuk_ruang->ket_log = 'Noreg Belum Terdaftar';
-                $log_rj_masuk_ruang->save();
-                return response()->json([
-                    'noreg' => $noreg_terakhir,
-                    'message' => "Noreg Belum Terdaftar",
-                    'nama schedule' => 'Encounter Masuk Ruang'
-                ], 200);
-            }
-            $mapping_organization = MappingOrganization::where('koders', $registrasi_pasien->Registrasi_Dokter->BAGREGDR)->first();
-            if ($mapping_organization == null) {
-                $log_rj_masuk_ruang = new RJ_02_B_Masuk_Ruang_Log();
-                $log_rj_masuk_ruang->noreg = $noreg_terakhir;
-                $log_rj_masuk_ruang->ket_log = "Organisasi Tidak Ditemukan Di Mapping Organization";
-                $log_rj_masuk_ruang->save();
-                return response()->json([
-                    'noreg' => $noreg_terakhir,
-                    'message' => "Organisasi Tidak Ditemukan Di Mapping Organization",
-                    'nama schedule' => 'Encounter Masuk Ruang'
-                ], 200);
-            }
-            $mapping_pasien = MappingPasien::where('norm', $registrasi_pasien->NOPASIEN)->first();
-            if ($mapping_pasien == null) {
-                $log_rj_masuk_ruang = new RJ_02_B_Masuk_Ruang_Log();
-                $log_rj_masuk_ruang->noreg = $noreg_terakhir;
-                $log_rj_masuk_ruang->ket_log = "Pasien Tidak Ditemukan Di Mapping Pasien";
-                $log_rj_masuk_ruang->save();
-                return response()->json([
-                    'noreg' => $noreg_terakhir,
-                    'message' => "Pasien Tidak Ditemukan Di Mapping Pasien",
-                    'nama schedule' => 'Encounter Masuk Ruang'
-                ], 200);
-            }
-
-            $mapping_dokter_spesialis = RJ_01_Practitioner::where('kode_dokter', $registrasi_pasien->Registrasi_Dokter->KODEDOKTER)->first();
-            if ($mapping_dokter_spesialis == null) {
-                $log_rj_masuk_ruang = new RJ_02_B_Masuk_Ruang_Log();
-                $log_rj_masuk_ruang->noreg = $noreg_terakhir;
-                $log_rj_masuk_ruang->ket_log = "Dokter untuk Pasien ".$registrasi_pasien->Pasien->NAMAPASIEN." Tidak Ditemukan Di Mapping Dokter Spesialis";
-                $log_rj_masuk_ruang->save();
-                return response()->json([
-                    'noreg' => $noreg_terakhir,
-                    'message' => "Dokter untuk Pasien ".$registrasi_pasien->Pasien->NAMAPASIEN." Tidak Ditemukan Di Mapping Dokter Spesialis",
-                    'nama schedule' => 'Encounter Masuk Ruang'
-                ], 200);
-            }
-
-            $hari = Carbon::parse(date('Y-m-d', strtotime($registrasi_pasien->TGLREG)))->locale('id')->isoFormat('dddd');
-            if ($hari == 'Minggu') {
-                $kodehari = '1';
-            }elseif ($hari == 'Senin') {
-                $kodehari = '2';
-            }elseif ($hari == 'Selasa') {
-                $kodehari = '3';
-            }elseif ($hari == 'Rabu') {
-                $kodehari = '4';
-            }elseif ($hari == 'Kamis') {
-                $kodehari = '5';
-            }elseif ($hari == 'Jumat') {
-                $kodehari = '6';
-            }elseif ($hari == 'Sabtu') {
-                $kodehari = '7';
-            }
-
-            // $jadwal_dokter = JadwalDokter::where('KODEDOKTER', $mapping_dokter_spesialis->kodepelayanan)
-            //     ->where('KODEBAGIAN', $mapping_organization->koders)
-            //     ->where('KODEHARI', $kodehari)
-            //     ->first();
-            // if ($jadwal_dokter == null) {
-            //     $log_rj_masuk_ruang = new RJ_02_B_Masuk_Ruang_Log();
-            //     $log_rj_masuk_ruang->noreg = $noreg_terakhir;
-            //     $log_rj_masuk_ruang->ket_log = "jadwal dokter tidak ditemukan";
-            //     $log_rj_masuk_ruang->save();
-            //     return response()->json([
-            //         'noreg' => $noreg_terakhir,
-            //         'message' => "jadwal dokter tidak ditemukan",
-            //         'nama schedule' => 'Encounter Masuk Ruang'
-            //     ], 200);
-            // }
-
-            // $jam_mulai = explode(' ', $jadwal_dokter->JAMMULAI)[1];
-            // $jam_selesai = explode(' ', $jadwal_dokter->JAMSELESAI)[1];
-
-            // // Bersihkan milidetik
-            // $jam_mulai = str_replace('.000', '', $jam_mulai);
-            // $jam_selesai = str_replace('.000', '', $jam_selesai);
-            $jam_mulai = sprintf('%02d:%02d:%02d', rand(9, 12), rand(0, 59), rand(0, 59));
-            // Proses dengan Carbon
-            $jam_masuk = Carbon::createFromFormat('H:i:s', $jam_mulai)
-                ->addMinutes(rand(0, 15))
-                ->format('H:i:s');
-            $jam_keluar = Carbon::createFromFormat('H:i:s', $jam_masuk)
-                ->addMinutes(rand(15, 30))
-                ->format('H:i:s');
-            // if (Carbon::createFromFormat('H:i:s', $jam_keluar)
-            //         ->greaterThan(Carbon::createFromFormat('H:i:s', $jam_selesai))) {
-            //     $jam_keluar = $jam_selesai;
-            // }
-
-            $encounter_id           = $mapping_kunjungan_poli->encounter;
-            $id_patient             = $mapping_pasien->kodesatusehat;
-            $name_patient           = $mapping_pasien->nama;
-            $id_practitioner        = $mapping_dokter_spesialis->satu_sehat_id;
-            $name_practitioner      = $mapping_dokter_spesialis->nama;
-            $datetime               = date('Y-m-d', strtotime($registrasi_pasien->TGLREG)).'T'.$jam_masuk.'.000+07:00';
-            $datetime_end           = date('Y-m-d', strtotime($registrasi_pasien->TGLREG)).'T'.$jam_keluar.'.000+07:00';
-            $id_location            = $mapping_organization->location->kodesatusehat;
-            $name_location          = $mapping_organization->location->deskripsi;
-
-            try {
-                $data = $this->rawatJalan->masuk_ruang($encounter_id, $id_patient, $name_patient, $id_practitioner, $name_practitioner, $datetime, $datetime_end, $id_location, $name_location);
+            $data = $this->rawatJalan->masuk_ruang($encounter_id, $id_patient, $name_patient, $id_practitioner, $name_practitioner, $datetime, $datetime_end, $id_location, $name_location);
+            if (isset($data->id)) {
                 $rj_masuk_ruang_model = new RJ_02_B_Masuk_Ruang();
                 $rj_masuk_ruang_model->encounter = $encounter_id;
-                $rj_masuk_ruang_model->noreg = $noreg_terakhir;
+                $rj_masuk_ruang_model->rekam_id = $rekam_id;
                 $rj_masuk_ruang_model->id_satu_sehat = $data->id;
                 $rj_masuk_ruang_model->save();
-            } catch (\Throwable $th) {
+
+                return response()->json([
+                    'rekam_id' => $rekam_id,
+                    'message' => 'Data Masuk ke ruang pemeriksaan sukses dikirim',
+                    'nama schedule' => 'Encounter Masuk Ruang'
+                ], 200);
+            }else {
                 $log_rj_masuk_ruang = new RJ_02_B_Masuk_Ruang_Log();
-                $log_rj_masuk_ruang->noreg = $noreg_terakhir;
-                $log_rj_masuk_ruang->ket_log = "duplicate";
+                $log_rj_masuk_ruang->rekam_id = $rekam_id;
+                $log_rj_masuk_ruang->ket_log = json_encode($data);
                 $log_rj_masuk_ruang->save();
                 return response()->json([
-                    'noreg' => $noreg_terakhir,
-                    'message' => "duplicate",
+                    'rekam_id' => $rekam_id,
+                    'message' => "Data Masuk ke ruang pemeriksaan gagal dikirim",
                     'nama schedule' => 'Encounter Masuk Ruang'
                 ], 200);
             }
-
-            return response()->json([
-                'noreg' => $noreg_terakhir,
-                'message' => 'Semua Data sukses dikirim',
-                'nama schedule' => 'Encounter Masuk Ruang'
-            ], 200);
         }
     // ===========End 02. Pendaftaran Kunjungan Rawat Jalan============
 

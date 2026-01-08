@@ -61,6 +61,7 @@
                                 <tr class="text-center">
                                     <th>REKAM ID</th>
                                     <th>Kode Satu Sehat (Encounter)</th>
+                                    <th>Id Satu Sehat</th>
                                     <th>Tanggal Jam</th>
                                 </tr>
                             </thead>
@@ -69,6 +70,7 @@
                                     <tr>
                                         <td>{{ $item->rekam_id }}</td>
                                         <td>{{ $item->encounter }}</td>
+                                        <td>{{ $item->id_satu_sehat }}</td>
                                         <td>{{ \Carbon\Carbon::parse($item->created_at)->translatedFormat('d F Y H:i:s') }}</td>
                                     </tr>
                                 @endforeach

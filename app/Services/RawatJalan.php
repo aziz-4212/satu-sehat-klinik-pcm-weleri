@@ -671,8 +671,8 @@ class RawatJalan
                                 }
                             ],
                             "individual": {
-                                "reference": "Practitioner/10013576199",
-                                "display": "Gusti Reka Kusuma"
+                                "reference": "Practitioner/'.$id_practitioner.'",
+                                "display": "'.$name_practitioner.'"
                             }
                         }
                     ],
