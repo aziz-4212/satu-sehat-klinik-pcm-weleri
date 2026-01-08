@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Configs extends Model
 {
     use HasFactory;
-    protected $connection = 'mysql';
+    protected $connection = 'mysql2';
     protected $table = 'config';
     public $timestamps = false;
     protected $guarded = [];

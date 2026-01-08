@@ -48,11 +48,11 @@
                         <tbody>
                             @foreach ($pasien as $item)
                                 <tr>
-                                    <td>{{ $item->NOPASIEN }}</td>
-                                    <td>{{ $item->NAMAPASIEN }}</td>
-                                    <td>{{ $item->TGLLAHIR }}</td>
-                                    <td>{{ $item->ALM1PASIEN }}</td>
-                                    <td>{{ $item->NOKTP }}</td>
+                                    <td>{{ $item->no_rm }}</td>
+                                    <td>{{ $item->nama }}</td>
+                                    <td>{{ $item->tgl_lahir }}</td>
+                                    <td>{{ $item->alamat_lengkap }}</td>
+                                    <td>{{ $item->no_ktp }}</td>
                                     <td>{{ $item->RJ_01_Patient->satu_sehat_id ?? '-' }}</td>
                                 </tr>
                             @endforeach

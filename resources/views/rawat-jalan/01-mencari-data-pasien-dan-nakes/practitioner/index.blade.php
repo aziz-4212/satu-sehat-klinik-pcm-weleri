@@ -33,9 +33,9 @@
                 <div class="card-header bg-teal d-flex justify-content-between align-items-center">
                     <h3 class="card-title text-white">Practitioner</h3>
                     <div class="ml-auto">
-                        <a href="{{ route('rawat-jalan.mencari-data-pasien-dan-nakes.practitioner.sinkornisasi-data-pegawai') }}" class="btn btn-primary">
+                        {{-- <a href="{{ route('rawat-jalan.mencari-data-pasien-dan-nakes.practitioner.sinkornisasi-data-pegawai') }}" class="btn btn-primary">
                             <span class="text-white"><i class="fas fa-sync-alt"></i> Sinkronisasi Data Personel Pegawai</span>
-                        </a>
+                        </a> --}}
                         <button type="button" class="btn btn-success" id="btnCreatePractitioner">
                             <span class="text-white"><i class="fas fa-plus"></i> Tambah Practitioner</span>
                         </button>

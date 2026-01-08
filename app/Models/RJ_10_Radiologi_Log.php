@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class RJ_10_Radiologi_Log extends Model
 {
     use HasFactory;
-    protected $connection = 'mysql';
+    protected $connection = 'mysql2';
     protected $table = 'RJ_10_radiologi_log';
     protected $guarded = [];
 }

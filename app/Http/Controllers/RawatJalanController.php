@@ -8,6 +8,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use App\Services\Patient;
 use App\Services\RawatJalan;
+use App\Models\Pasien;
 use App\Models\Obat;
 use App\Models\RJ00UkpKefarmasianLaboratorium;
 use App\Models\RJ_00_Organisation_Location;
@@ -109,7 +110,7 @@ class RawatJalanController extends Controller
         }
 
         public function pasien_index(){
-            $pasien = Pasien::orderBy('NOPASIEN', 'asc')->paginate(25);
+            $pasien = Pasien::orderBy('id', 'asc')->paginate(25);
             return view('rawat-jalan.01-mencari-data-pasien-dan-nakes.pasien.index', compact('pasien'));
         }
 
@@ -288,7 +289,7 @@ class RawatJalanController extends Controller
             return redirect()->back()->with('success', 'Data practitioner berhasil diperbarui');
         }
 
-        /**
+        /**5r
          * Destroy practitioner
          */
         public function practitioner_destroy(Request $request, $id)

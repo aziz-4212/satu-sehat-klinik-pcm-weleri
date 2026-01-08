@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class RJ_15_Questionnaire_Response_Log extends Model
 {
     use HasFactory;
-    protected $connection = 'mysql';
+    protected $connection = 'mysql2';
     protected $table = 'RJ_15_questionnaire_response_log';
     // public $timestamps = true;
     protected $guarded = [];

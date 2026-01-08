@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class RJ_01_Patient extends Model
 {
     use HasFactory;
-    protected $connection = 'mysql';
+    protected $connection = 'mysql2';
     protected $table = 'RJ_01_patient';
     protected $guarded = [];
 }
