@@ -8,6 +8,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use App\Services\Patient;
 use App\Services\RawatJalan;
+use App\Models\Rekam;
 use App\Models\Pasien;
 use App\Models\Obat;
 use App\Models\RJ00UkpKefarmasianLaboratorium;
@@ -352,114 +353,113 @@ class RawatJalanController extends Controller
             return view('rawat-jalan.02-pendaftaran-kunjungan-rawat-jalan.pembuatan-kunjungan-baru.index', compact('data'));
         }
 
+        // $id_patient = "P01536204075";
+        // $name_patient = "sunarsih";
+        // $id_practitioner = "10016656663";
+        // $name_practitioner = "TUTIK NUR FAIZAH";
+        // $date = "2025-09-09";
+        // // $encounter = $this->rawatJalan->kunjungan_baru($id_patient, $name_patient, $id_practitioner, $name_practitioner, $date);
+        // // dd($encounter);
+
+        // $encounter_id = "1da6ffde-e80b-46bc-8e54-05554675b1c5";
+        // $id_patient = "P01536204075";
+        // $name_patient = "sunarsih";
+        // $id_practitioner = "10016656663";
+        // $name_practitioner = "TUTIK NUR FAIZAH";
+        // $datetime               = '2025-09-09T12:15:44.000+07:00';
+        // $datetime_end           = '2025-09-09T12:30:56.000+07:00';
+        // $id_location = "3a4ff0ba-3edd-42ce-99f8-25c20383a3f2";
+        // $name_location = "klinik dokter umum";
+        // // $data = $this->rawatJalan->masuk_ruang($encounter_id, $id_patient, $name_patient, $id_practitioner, $name_practitioner, $datetime, $datetime_end, $id_location, $name_location);
+        // // dd($data);
+
+        // $kode_diagnosa = "j06.9";
+        // $deskripsi_diagnosa = "Penyakit ISPA akut tidak spesifik";
+        // $mapping_pasien_kodesatusehat = "P01536204075";
+        // $mapping_pasien_namasatusehat = "sunarsih";
+        // $mapping_kunjungan_poli_encounter = "1da6ffde-e80b-46bc-8e54-05554675b1c5";
+        // // $data = $this->rawatJalan->diagnosis_primer($kode_diagnosa, $deskripsi_diagnosa, $mapping_pasien_kodesatusehat, $mapping_pasien_namasatusehat, $mapping_kunjungan_poli_encounter);
+        // // dd($data);
+
+        // $id_obat_satusehat = "88eb8501-c785-42b2-b252-7e9517f5600b";
+        // $display_obat_satusehat = "Paracetamol 500 mg Tablet (PAMOL)";
+        // $id_patient = "P01536204075";
+        // $id_patient_display = "sunarsih";
+        // $encounter = "1da6ffde-e80b-46bc-8e54-05554675b1c5";
+        // $tanggal_peresepan = '2025-09-09T12:30:56.000+07:00';
+        // $id_dokter_satu_sehat = "10016656663";
+        // $display_dokter_satu_sehat = "TUTIK NUR FAIZAH";
+        // $dosis_obat = "3x1 Tablet";
+        // $start_waktu_pemberian_obat = '2025-09-09T12:30:56.000+07:00';
+        // $end_waktu_pemberian_obat = '2025-09-12T12:30:56.000+07:00';
+        // $jumlah_obat = 9;
+        // $durasi_penggunaan = "3";
+        // // $medication_request = $this->rawatJalan->create_medication_request($id_obat_satusehat, $display_obat_satusehat, $id_patient, $id_patient_display, $encounter, $tanggal_peresepan, $id_dokter_satu_sehat, $display_dokter_satu_sehat, $dosis_obat, $start_waktu_pemberian_obat, $end_waktu_pemberian_obat, $jumlah_obat, $durasi_penggunaan);
+        // // dd($medication_request);
+        // $kode_quesnionnaire = "2025090911";
+        // $id_apoteker = "10016656663";
+        // $display_apoteker = "TUTIK NUR FAIZAH";
+        // // $questionnaire_response = $this->rawatJalan->create_questionnaire_response($kode_quesnionnaire, $id_patient, $id_patient_display, $encounter, $tanggal_peresepan, $id_apoteker, $display_apoteker);
+        // // dd($questionnaire_response);
+        // $kode_barang_obat = "Para";
+        // $kode_oabat_kfa = "93002313";
+        // $deskripsi_obat_kfa = "Paracetamol 500 mg Tablet (PAMOL)";
+        // // $medication_dispense_obat = $this->rawatJalan->create_medication_dispense_obat($kode_barang_obat, $kode_oabat_kfa, $deskripsi_obat_kfa);
+        // // dd($medication_dispense_obat);
+        // $nomer_resep = "REG#2025090911";
+        // $medication_id = "e6cb6f65-0a69-4f37-ac6a-9db817333db2";
+        // $id_dockter_satu_sehat = "10016656663";
+        // $display_dockter_satu_sehat = "TUTIK NUR FAIZAH";
+        // $medication_request_id = "ae25919a-0e6a-4e58-b7cc-476a5283ded4";
+        // $start_waktu_pemberian_obat = '2025-09-09T12:30:56.000+07:00';
+        // $end_waktu_pemberian_obat = '2025-09-09T12:30:56.000+07:00';
+        // // $medication_dispense = $this->rawatJalan->create_medication_dispense($nomer_resep, $medication_id, $display_obat_satusehat, $id_patient, $id_patient_display, $encounter, $id_dockter_satu_sehat, $display_dockter_satu_sehat, $medication_request_id, $start_waktu_pemberian_obat, $end_waktu_pemberian_obat);
+        // // dd($medication_dispense);
+
+        // $Patient_id = "P01536204075";
+        // $Patient_Name = "sunarsih";
+        // $Encounter_id ="1da6ffde-e80b-46bc-8e54-05554675b1c5";
+        // $Practitioner_id = "10016656663";
+        // $Practitioner_Name = "TUTIK NUR FAIZAH";
+        // $start_date = '2025-09-09T12:30:56.000+07:00';
+        // $end_date = '2025-09-09T12:30:56.000+07:00';
+        // // $procedure_data = $this->rawatJalan->procedure_status_puasa_laboratorium_nominal($Patient_id, $Patient_Name, $Encounter_id, $Practitioner_id, $Practitioner_Name, $start_date, $end_date);
+        // // dd($procedure_data);
+        // $Noreg = "REG#2025090911";
+        // $kode_loinc = "41653-7";
+        // $nama_loinc = "41653-7";
+        // $deskripsi_loinc = "41653-7";
+        // $Procedure_Id = "33a69faf-eb47-4abc-b2d4-44cd0c10d59f";
+        // // $service_request_data = $this->rawatJalan->service_request_laboratorium_nominal($Noreg, $Patient_id, $Patient_Name, $Encounter_id, $Practitioner_id, $Practitioner_Name, $start_date, $end_date, $kode_loinc, $nama_loinc, $deskripsi_loinc, $Procedure_Id);
+        // // dd($service_request_data);
+        // $date = '2025-09-09T12:30:56.000+07:00';
+        // $kode_snomed = "119364003";
+        // $nama_snomed = "Serum specimen";
+        // $value = "367";
+        // $satuan = "mg/dl";
+        // $service_request_id = "8d566bd9-14d5-426c-a2a3-8005c13aa649";
+        // // $specimen_data = $this->rawatJalan->specimen_laboratorium_nominal($Noreg, $Patient_id, $Patient_Name, $Practitioner_id, $Practitioner_Name, $date, $kode_snomed, $nama_snomed, $value, $satuan, $service_request_id);
+        // // dd($specimen_data);
+        // $Specimen_Id = "4d87f3d6-5155-42ef-8e68-d0721725d908";
+        // $ServiceRequest_Id = "8d566bd9-14d5-426c-a2a3-8005c13aa649";
+        // $loinc_code = "41653-7";
+        // $loinc_name = "41653-7";
+        // $request_date = '2025-09-09T12:30:56.000+07:00';
+        // $result_date = '2025-09-09T12:30:56.000+07:00';
+        // // $observation_data = $this->rawatJalan->observation_laboratorium_nominal($Noreg, $Patient_id, $Encounter_id, $Practitioner_id, $Specimen_Id, $ServiceRequest_Id, $loinc_code, $loinc_name, $request_date, $result_date);
+        // // dd($observation_data);
+        // // dd("halo");
+        // $Observation_id = "f08e3c1f-387d-476e-b7f3-1e61401d2eb2";
+        // $Specimen_Id = "4d87f3d6-5155-42ef-8e68-d0721725d908";
+        // $ServiceRequest_id = "8d566bd9-14d5-426c-a2a3-8005c13aa649";
+        // $diagnostic_report_data = $this->rawatJalan->diagnostic_report_laboratorium_nominal($Noreg, $Patient_id, $Encounter_id, $Practitioner_id, $Observation_id, $Specimen_Id, $ServiceRequest_id, $kode_loinc, $nama_loinc, $request_date, $result_date);
+        // // dd($diagnostic_report_data);
+
         public function pembuatan_kunjungan_baru_api(Request $request, $noreg_terakhir = null){
             set_time_limit((int) 0);
-            $Configs = Configs::first();
-            // dd($Configs);
-            $id_patient = "P01536204075";
-            $name_patient = "sunarsih";
-            $id_practitioner = "10016656663";
-            $name_practitioner = "TUTIK NUR FAIZAH";
-            $date = "2025-09-09";
-            // $encounter = $this->rawatJalan->kunjungan_baru($id_patient, $name_patient, $id_practitioner, $name_practitioner, $date);
-            // dd($encounter);
-
-            $encounter_id = "1da6ffde-e80b-46bc-8e54-05554675b1c5";
-            $id_patient = "P01536204075";
-            $name_patient = "sunarsih";
-            $id_practitioner = "10016656663";
-            $name_practitioner = "TUTIK NUR FAIZAH";
-            $datetime               = '2025-09-09T12:15:44.000+07:00';
-            $datetime_end           = '2025-09-09T12:30:56.000+07:00';
-            $id_location = "3a4ff0ba-3edd-42ce-99f8-25c20383a3f2";
-            $name_location = "klinik dokter umum";
-            // $data = $this->rawatJalan->masuk_ruang($encounter_id, $id_patient, $name_patient, $id_practitioner, $name_practitioner, $datetime, $datetime_end, $id_location, $name_location);
-            // dd($data);
-
-            $kode_diagnosa = "j06.9";
-            $deskripsi_diagnosa = "Penyakit ISPA akut tidak spesifik";
-            $mapping_pasien_kodesatusehat = "P01536204075";
-            $mapping_pasien_namasatusehat = "sunarsih";
-            $mapping_kunjungan_poli_encounter = "1da6ffde-e80b-46bc-8e54-05554675b1c5";
-            // $data = $this->rawatJalan->diagnosis_primer($kode_diagnosa, $deskripsi_diagnosa, $mapping_pasien_kodesatusehat, $mapping_pasien_namasatusehat, $mapping_kunjungan_poli_encounter);
-            // dd($data);
-
-            $id_obat_satusehat = "88eb8501-c785-42b2-b252-7e9517f5600b";
-            $display_obat_satusehat = "Paracetamol 500 mg Tablet (PAMOL)";
-            $id_patient = "P01536204075";
-            $id_patient_display = "sunarsih";
-            $encounter = "1da6ffde-e80b-46bc-8e54-05554675b1c5";
-            $tanggal_peresepan = '2025-09-09T12:30:56.000+07:00';
-            $id_dokter_satu_sehat = "10016656663";
-            $display_dokter_satu_sehat = "TUTIK NUR FAIZAH";
-            $dosis_obat = "3x1 Tablet";
-            $start_waktu_pemberian_obat = '2025-09-09T12:30:56.000+07:00';
-            $end_waktu_pemberian_obat = '2025-09-12T12:30:56.000+07:00';
-            $jumlah_obat = 9;
-            $durasi_penggunaan = "3";
-            // $medication_request = $this->rawatJalan->create_medication_request($id_obat_satusehat, $display_obat_satusehat, $id_patient, $id_patient_display, $encounter, $tanggal_peresepan, $id_dokter_satu_sehat, $display_dokter_satu_sehat, $dosis_obat, $start_waktu_pemberian_obat, $end_waktu_pemberian_obat, $jumlah_obat, $durasi_penggunaan);
-            // dd($medication_request);
-            $kode_quesnionnaire = "2025090911";
-            $id_apoteker = "10016656663";
-            $display_apoteker = "TUTIK NUR FAIZAH";
-            // $questionnaire_response = $this->rawatJalan->create_questionnaire_response($kode_quesnionnaire, $id_patient, $id_patient_display, $encounter, $tanggal_peresepan, $id_apoteker, $display_apoteker);
-            // dd($questionnaire_response);
-            $kode_barang_obat = "Para";
-            $kode_oabat_kfa = "93002313";
-            $deskripsi_obat_kfa = "Paracetamol 500 mg Tablet (PAMOL)";
-            // $medication_dispense_obat = $this->rawatJalan->create_medication_dispense_obat($kode_barang_obat, $kode_oabat_kfa, $deskripsi_obat_kfa);
-            // dd($medication_dispense_obat);
-            $nomer_resep = "REG#2025090911";
-            $medication_id = "e6cb6f65-0a69-4f37-ac6a-9db817333db2";
-            $id_dockter_satu_sehat = "10016656663";
-            $display_dockter_satu_sehat = "TUTIK NUR FAIZAH";
-            $medication_request_id = "ae25919a-0e6a-4e58-b7cc-476a5283ded4";
-            $start_waktu_pemberian_obat = '2025-09-09T12:30:56.000+07:00';
-            $end_waktu_pemberian_obat = '2025-09-09T12:30:56.000+07:00';
-            // $medication_dispense = $this->rawatJalan->create_medication_dispense($nomer_resep, $medication_id, $display_obat_satusehat, $id_patient, $id_patient_display, $encounter, $id_dockter_satu_sehat, $display_dockter_satu_sehat, $medication_request_id, $start_waktu_pemberian_obat, $end_waktu_pemberian_obat);
-            // dd($medication_dispense);
-
-            $Patient_id = "P01536204075";
-            $Patient_Name = "sunarsih";
-            $Encounter_id ="1da6ffde-e80b-46bc-8e54-05554675b1c5";
-            $Practitioner_id = "10016656663";
-            $Practitioner_Name = "TUTIK NUR FAIZAH";
-            $start_date = '2025-09-09T12:30:56.000+07:00';
-            $end_date = '2025-09-09T12:30:56.000+07:00';
-            // $procedure_data = $this->rawatJalan->procedure_status_puasa_laboratorium_nominal($Patient_id, $Patient_Name, $Encounter_id, $Practitioner_id, $Practitioner_Name, $start_date, $end_date);
-            // dd($procedure_data);
-            $Noreg = "REG#2025090911";
-            $kode_loinc = "41653-7";
-            $nama_loinc = "41653-7";
-            $deskripsi_loinc = "41653-7";
-            $Procedure_Id = "33a69faf-eb47-4abc-b2d4-44cd0c10d59f";
-            // $service_request_data = $this->rawatJalan->service_request_laboratorium_nominal($Noreg, $Patient_id, $Patient_Name, $Encounter_id, $Practitioner_id, $Practitioner_Name, $start_date, $end_date, $kode_loinc, $nama_loinc, $deskripsi_loinc, $Procedure_Id);
-            // dd($service_request_data);
-            $date = '2025-09-09T12:30:56.000+07:00';
-            $kode_snomed = "119364003";
-            $nama_snomed = "Serum specimen";
-            $value = "367";
-            $satuan = "mg/dl";
-            $service_request_id = "8d566bd9-14d5-426c-a2a3-8005c13aa649";
-            // $specimen_data = $this->rawatJalan->specimen_laboratorium_nominal($Noreg, $Patient_id, $Patient_Name, $Practitioner_id, $Practitioner_Name, $date, $kode_snomed, $nama_snomed, $value, $satuan, $service_request_id);
-            // dd($specimen_data);
-            $Specimen_Id = "4d87f3d6-5155-42ef-8e68-d0721725d908";
-            $ServiceRequest_Id = "8d566bd9-14d5-426c-a2a3-8005c13aa649";
-            $loinc_code = "41653-7";
-            $loinc_name = "41653-7";
-            $request_date = '2025-09-09T12:30:56.000+07:00';
-            $result_date = '2025-09-09T12:30:56.000+07:00';
-            // $observation_data = $this->rawatJalan->observation_laboratorium_nominal($Noreg, $Patient_id, $Encounter_id, $Practitioner_id, $Specimen_Id, $ServiceRequest_Id, $loinc_code, $loinc_name, $request_date, $result_date);
-            // dd($observation_data);
-            // dd("halo");
-            $Observation_id = "f08e3c1f-387d-476e-b7f3-1e61401d2eb2";
-            $Specimen_Id = "4d87f3d6-5155-42ef-8e68-d0721725d908";
-            $ServiceRequest_id = "8d566bd9-14d5-426c-a2a3-8005c13aa649";
-            $diagnostic_report_data = $this->rawatJalan->diagnostic_report_laboratorium_nominal($Noreg, $Patient_id, $Encounter_id, $Practitioner_id, $Observation_id, $Specimen_Id, $ServiceRequest_id, $kode_loinc, $nama_loinc, $request_date, $result_date);
-            dd($diagnostic_report_data);
             if ($noreg_terakhir == null) {
-                $mapping_kunjungan_poli = RJ_02_A_Kunjungan_Baru::orderBy('noreg', 'desc')->pluck('noreg')->first();
-                $log_encounter = RJ_02_A_Kunjungan_Baru_Log::orderBy('noreg', 'desc')->pluck('noreg')->first();
+                $mapping_kunjungan_poli = RJ_02_A_Kunjungan_Baru::orderBy('rekam_id', 'desc')->pluck('rekam_id')->first();
+                $log_encounter = RJ_02_A_Kunjungan_Baru_Log::orderBy('rekam_id', 'desc')->pluck('rekam_id')->first();
                 if ($mapping_kunjungan_poli > $log_encounter) {
                     $registrasi_pasien_terakhir = $mapping_kunjungan_poli;
                 }elseif ($mapping_kunjungan_poli < $log_encounter) {
@@ -469,14 +469,22 @@ class RawatJalanController extends Controller
                 }
 
                 $registrasi_pasien_terakhir = $registrasi_pasien_terakhir+1;
-                $noreg_tanggal_depan = (substr($registrasi_pasien_terakhir, 0, -4)+1)."0000";
-                $registrasi_pasien_tanggal_terakhir = RegistrasiPasien::where('NOREG', "<",$noreg_tanggal_depan)->orderBy('noreg', 'desc')->pluck('noreg')->first();
-                if ($registrasi_pasien_terakhir > $registrasi_pasien_tanggal_terakhir) {
-                    $registrasi_pasien_terakhir = $noreg_tanggal_depan+1;
+                $registrasi_pasien = Rekam::where('id', $registrasi_pasien_terakhir)->first();
+
+                if ($registrasi_pasien == null) {
+                    $log_encounter = new RJ_02_A_Kunjungan_Baru_Log();
+                    $log_encounter->rekam_id = $registrasi_pasien_terakhir;
+                    $log_encounter->ket_log = "Data Rekam Medis Tidak ditemukan";
+                    $log_encounter->save();
+                    return response()->json([
+                        'rekam_id' => $registrasi_pasien_terakhir,
+                        'message' => "Data Rekam Medis Tidak ditemukan",
+                        'nama schedule' => 'pendaftaran pendataan pasien'
+                    ], 200);
                 }
 
-                $batas_pengiriman = Carbon::now()->setTimezone('Asia/Jakarta')->format('ymd')."0000";
-                if ($registrasi_pasien_terakhir > $batas_pengiriman) {
+                $tanggal_sekarang = Carbon::now()->setTimezone('Asia/Jakarta')->format('Y-m-d');
+                if ($registrasi_pasien->tgl_rekam == $tanggal_sekarang) {
                     return response()->json([
                         'noreg' => $registrasi_pasien_terakhir,
                         'message' => "Noreg Belum Terdaftar",
@@ -484,96 +492,80 @@ class RawatJalanController extends Controller
                     ], 200);
                 }
 
-                $registrasi_pasien = RegistrasiPasien::where('NOREG', $registrasi_pasien_terakhir)
-                    ->whereHas('Registrasi_Dokter', function ($query) {
-                        $query->where('BAGREGDR', 'like', '91%');
-                    })->orderBy('NOREG')
-                    ->whereHas('Pasien', function ($query) {
-                        $query->where('NOKTP', '!=', null);
-                        $query->where('NOKTP', 'not like', '0%');
-                    })
-                    ->first();
+                // ============================== cek format NIK ==============================
+                    $data_pasien_search_nik = $this->patient->search_nik($registrasi_pasien->pasien->no_ktp);
+
+                    $jk = ($registrasi_pasien->pasien->jk == 'Laki-Laki') ? 'male' : 'female';
+                    $data_pasien_search_name = $this->patient->search_name_gender_birthdate($registrasi_pasien->pasien->nama, $jk, $registrasi_pasien->pasien->tgl_lahir);
+                    if (is_object($data_pasien_search_nik) && property_exists($data_pasien_search_nik, 'total') && $data_pasien_search_nik->total != 0) {
+                        $cek_RJ_01_Patient = RJ_01_Patient::where('norm', $registrasi_pasien->pasien->no_rm)->first();
+                        if ($cek_RJ_01_Patient == null) {
+                            $RJ_01_Patient = new RJ_01_Patient();
+                            $RJ_01_Patient->norm = $registrasi_pasien->pasien->no_rm;
+                            $RJ_01_Patient->satu_sehat_nama = $data_pasien_search_nik->entry[0]->resource->name[0]->text;
+                            $RJ_01_Patient->satu_sehat_id = $data_pasien_search_nik->entry[0]->resource->id;
+                            $RJ_01_Patient->response = json_encode($data_pasien_search_nik);
+                            $RJ_01_Patient->save();
+                        }
+                        $RJ_01_Patient = RJ_01_Patient::where('norm', $registrasi_pasien->pasien->no_rm)->first();
+                    }elseif (is_object($data_pasien_search_name) && property_exists($data_pasien_search_name, 'total') && $data_pasien_search_name->total != 0) {
+                        $cek_RJ_01_Patient = RJ_01_Patient::where('norm', $registrasi_pasien->pasien->no_rm)->first();
+                        if ($cek_RJ_01_Patient == null) {
+                            $RJ_01_Patient = new RJ_01_Patient();
+                            $RJ_01_Patient->norm = $registrasi_pasien->pasien->no_rm;
+                            $RJ_01_Patient->satu_sehat_nama = $data_pasien_search_name->entry[0]->resource->name[0]->text;
+                            $RJ_01_Patient->satu_sehat_id = $data_pasien_search_name->entry[0]->resource->id;
+                            $RJ_01_Patient->response = json_encode($data_pasien_search_name);
+                            $RJ_01_Patient->save();
+                        }
+                        $RJ_01_Patient = RJ_01_Patient::where('norm', $registrasi_pasien->pasien->no_rm)->first();
+                    }else {
+                        $log_encounter = new RJ_02_A_Kunjungan_Baru_Log();
+                        $log_encounter->rekam_id = $registrasi_pasien_terakhir;
+                        $log_encounter->ket_log = 'NIK '.$registrasi_pasien->pasien->nama.' Tidak Ditemukan';
+                        $log_encounter->save();
+                        return response()->json([
+                            'noreg' => $registrasi_pasien_terakhir,
+                            'message' => 'NIK '.$registrasi_pasien->pasien->nama.' Tidak Ditemukan',
+                            'nama schedule' => 'pendaftaran pendataan pasien'
+                        ], 200);
+                    }
+                // ============================== End cek format NIK ==============================
             }else {
                 $registrasi_pasien_terakhir = (Integer)$noreg_terakhir;
-                $registrasi_pasien = RegistrasiPasien::where('NOREG', $registrasi_pasien_terakhir)
-                                ->orderBy('NOREG')
-                                ->first();
-            }
-            if ($registrasi_pasien == null) {
-                $log_encounter = new RJ_02_A_Kunjungan_Baru_Log();
-                $log_encounter->noreg = $registrasi_pasien_terakhir;
-                $log_encounter->ket_log = "noreg bukan pasien rawat jalan / NIK Salah";
-                $log_encounter->save();
-
-                return response()->json([
-                    'noreg' => $registrasi_pasien_terakhir,
-                    'message' => "noreg bukan pasien rawat jalan / NIK Salah",
-                    'nama schedule' => 'pendaftaran pendataan pasien'
-                ], 200);
-            }
-
-            $now = Carbon::now()->setTimezone('Asia/Jakarta');
-            $now->format('Y-m-d H:i:s.v');
-            // $registrasi_pasien_terakhir = '2511300002';
-            $registrasi_pasien = RegistrasiPasien::where('NOREG', $registrasi_pasien_terakhir)->first();
-            // $mapping_dokter_spesialis = RJ_01_Practitioner::where('kode_dokter', $registrasi_pasien->Registrasi_Dokter->KODEDOKTER)->first();
-            // if ($mapping_dokter_spesialis == null) {
-            //     $RJ_10_laboratory_Log = new RJ_10_laboratory_Log();
-            //     $RJ_10_laboratory_Log->noreg = $noreg_terakhir;
-            //     $RJ_10_laboratory_Log->ket_log = "Dokter untuk Pasien ".$registrasi_pasien->Pasien->NAMAPASIEN." Tidak Ditemukan Di Mapping Dokter Spesialis";
-            //     $RJ_10_laboratory_Log->save();
-            //     return response()->json([
-            //         'noreg' => $noreg_terakhir,
-            //         'message' => "Dokter untuk Pasien ".$registrasi_pasien->Pasien->NAMAPASIEN." Tidak Ditemukan Di Mapping Dokter Spesialis",
-            //         'nama schedule' => 'Laboratorium'
-            //     ], 200);
-            // }
-
-            // ============================== cek format NIK ==============================
-            $data = $this->patient->search_nik($registrasi_pasien->Pasien->NOKTP);
-            if (is_object($data) && property_exists($data, 'total') && $data->total != 0) {
-                $cek_mapping_pasien = MappingPasien::where('nik', $registrasi_pasien->Pasien->NOKTP)->first();
-                if ($cek_mapping_pasien == null) {
-                    $mapping_pasien = new MappingPasien();
-                    $mapping_pasien->norm = $registrasi_pasien->Pasien->NOPASIEN;
-                    $mapping_pasien->nik = $registrasi_pasien->Pasien->NOKTP;
-                    $mapping_pasien->nama = $registrasi_pasien->Pasien->NAMAPASIEN;
-                    $mapping_pasien->namasatusehat = $data->entry[0]->resource->name[0]->text;
-                    $mapping_pasien->kodesatusehat = $data->entry[0]->resource->id;
-                    $mapping_pasien->save();
+                $registrasi_pasien = RegistrasiPasien::where('id', $registrasi_pasien_terakhir)->first();
+                if ($registrasi_pasien == null) {
+                    $log_encounter = new RJ_02_A_Kunjungan_Baru_Log();
+                    $log_encounter->rekam_id = $registrasi_pasien_terakhir;
+                    $log_encounter->ket_log = "Data Rekam Medis Tidak ditemukan";
+                    $log_encounter->save();
+                    return response()->json([
+                        'rekam_id' => $registrasi_pasien_terakhir,
+                        'message' => "Data Rekam Medis Tidak ditemukan",
+                        'nama schedule' => 'pendaftaran pendataan pasien'
+                    ], 200);
                 }
-            }else {
-                $log_encounter = new RJ_02_A_Kunjungan_Baru_Log();
-                $log_encounter->noreg = $registrasi_pasien_terakhir;
-                $log_encounter->ket_log = 'NIK '.$registrasi_pasien->Pasien->NAMAPASIEN.' Tidak Ditemukan';
-                $log_encounter->save();
-                return response()->json([
-                    'noreg' => $registrasi_pasien_terakhir,
-                    'message' => 'NIK '.$registrasi_pasien->Pasien->NAMAPASIEN.' Tidak Ditemukan',
-                    'nama schedule' => 'pendaftaran pendataan pasien'
-                ], 200);
             }
-            // ===================================Encounter==============================================
-                $dateArray = explode(' ', $registrasi_pasien->TGLREG);
-                $dateValue = $dateArray[0];
 
-                $id_patient = $data->entry[0]->resource->id;
-                // $name_patient = $data->entry[0]->resource->name[0]->text;
-                $name_patient = strtok($registrasi_pasien->Pasien->NAMAPASIEN, ',');
-                $id_practitioner = '10013576199';
-                $name_practitioner = 'dr.Gusti Reka Kusuma';
-                $date = $dateValue;
+            // ===================================Encounter==============================================
+                $tanggal = Carbon::parse($registrasi_pasien->created_at)->format('Y-m-d');
+                $jam = Carbon::parse($registrasi_pasien->created_at)->format('H:i:s');
+
+                $id_patient         = $RJ_01_Patient->satu_sehat_id;
+                $name_patient       = $registrasi_pasien->pasien->nama;
+                $id_practitioner    = "10016656663";
+                $name_practitioner  = "TUTIK NUR FAIZAH";
+                $date               = date('Y-m-d', strtotime($tanggal)).'T'.$jam.'.000+07:00';
 
                 $encounter = $this->rawatJalan->kunjungan_baru($id_patient, $name_patient, $id_practitioner, $name_practitioner, $date);
                 if (isset($encounter->id)) {
                     $mapping_kunjungan_poli = new RJ_02_A_Kunjungan_Baru();
-                    $mapping_kunjungan_poli->noreg = $registrasi_pasien_terakhir;
+                    $mapping_kunjungan_poli->rekam_id = $registrasi_pasien_terakhir;
                     $mapping_kunjungan_poli->encounter = $encounter->id;
-                    $mapping_kunjungan_poli->tanggal = $now;
                     $mapping_kunjungan_poli->save();
                 }else {
                     $log_encounter = new RJ_02_A_Kunjungan_Baru_Log();
-                    $log_encounter->noreg = $registrasi_pasien_terakhir;
+                    $log_encounter->rekam_id = $registrasi_pasien_terakhir;
                     $log_encounter->ket_log = json_encode($encounter);
                     $log_encounter->save();
                 }

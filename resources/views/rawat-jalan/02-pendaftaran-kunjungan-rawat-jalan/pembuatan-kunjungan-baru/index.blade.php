@@ -42,7 +42,7 @@
                         @if (request('status') == 'error')
                             <thead>
                                 <tr class="text-center">
-                                    <th>NOREG</th>
+                                    <th>REKAM ID</th>
                                     <th>Error</th>
                                     <th>Tanggal Jam</th>
                                 </tr>
@@ -50,7 +50,7 @@
                             <tbody>
                                 @foreach ($data as $item)
                                     <tr>
-                                        <td>{{ $item->noreg }}</td>
+                                        <td>{{ $item->rekam_id }}</td>
                                         <td>{{ $item->ket_log }}</td>
                                         <td>{{ \Carbon\Carbon::parse($item->created_at)->translatedFormat('d F Y H:i:s') }}</td>
                                     </tr>
@@ -59,7 +59,7 @@
                         @else
                             <thead>
                                 <tr class="text-center">
-                                    <th>NOREG</th>
+                                    <th>REKAM ID</th>
                                     <th>Kode Satu Sehat (Encounter)</th>
                                     <th>Tanggal Jam</th>
                                 </tr>
@@ -67,7 +67,7 @@
                             <tbody>
                                 @foreach ($data as $item)
                                     <tr>
-                                        <td>{{ $item->noreg }}</td>
+                                        <td>{{ $item->rekam_id }}</td>
                                         <td>{{ $item->encounter }}</td>
                                         <td>{{ \Carbon\Carbon::parse($item->created_at)->translatedFormat('d F Y H:i:s') }}</td>
                                     </tr>

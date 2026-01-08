@@ -585,7 +585,7 @@ class RawatJalan
                         }
                     ],
                     "period": {
-                        "start": "'.$date.'T01:00:00+00:00"
+                        "start": "'.$date.'"
                     },
                     "location": [
                         {
@@ -599,7 +599,7 @@ class RawatJalan
                         {
                             "status": "arrived",
                             "period": {
-                                "start": "'.$date.'T01:10:00+00:00"
+                                "start": "'.$date.'"
                             }
                         }
                     ],
