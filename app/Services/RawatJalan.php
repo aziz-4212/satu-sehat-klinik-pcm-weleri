@@ -754,6 +754,287 @@ class RawatJalan
         }
     // ==================================02. Pendaftaran Kunjungan Rawat Jalan==================================
 
+    // ==================================04. Hasil Pemeriksaan Fisik==================================
+        public function tekanan_darah_sistole($id_patient, $id_practitioner, $encounter_id, $date, $sistole)
+        {
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => $this->url->base_url.'/Observation',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS =>'{
+                    "resourceType": "Observation",
+                    "status": "final",
+                    "category": [
+                        {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                    "code": "vital-signs",
+                                    "display": "Vital Signs"
+                                }
+                            ]
+                        }
+                    ],
+                    "code": {
+                        "coding": [
+                            {
+                                "system": "http://loinc.org",
+                                "code": "8480-6",
+                                "display": "Systolic blood pressure"
+                            }
+                        ]
+                    },
+                    "subject": {
+                        "reference": "Patient/'.$id_patient.'"
+                    },
+                    "performer": [
+                        {
+                            "reference": "Practitioner/'.$id_practitioner.'"
+                        }
+                    ],
+                    "encounter": {
+                        "reference": "Encounter/'.$encounter_id.'",
+                        "display": "Pemeriksaan Tekanan Darah Sistole"
+                    },
+                    "effectiveDateTime": "'.$date.'",
+                    "issued": "'.$date.'",
+                    "valueQuantity": {
+                        "value": '.$sistole.',
+                        "unit": "mm[Hg]",
+                        "system": "http://unitsofmeasure.org",
+                        "code": "mm[Hg]"
+                    }
+                }',
+                CURLOPT_HTTPHEADER => array(
+                    'Content-Type: application/json',
+                    'Authorization: Bearer '.$this->token
+                ),
+            ));
+
+            $response = curl_exec($curl);
+
+            curl_close($curl);
+            $response = json_decode($response);
+            return $response;
+        }
+
+        public function tekanan_darah_diastole($id_patient, $id_practitioner, $encounter_id, $date, $diastole) //Tekanan Darah Diastole
+        {
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => $this->url->base_url.'/Observation',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS =>'{
+                    "resourceType": "Observation",
+                    "status": "final",
+                    "category": [
+                        {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                    "code": "vital-signs",
+                                    "display": "Vital Signs"
+                                }
+                            ]
+                        }
+                    ],
+                    "code": {
+                        "coding": [
+                            {
+                                "system": "http://loinc.org",
+                                "code": "8462-4",
+                                "display": "Diastolic blood pressure"
+                            }
+                        ]
+                    },
+                    "subject": {
+                        "reference": "Patient/'.$id_patient.'"
+                    },
+                    "performer": [
+                        {
+                            "reference": "Practitioner/'.$id_practitioner.'"
+                        }
+                    ],
+                    "encounter": {
+                        "reference": "Encounter/'.$encounter_id.'",
+                        "display": "Pemeriksaan Tekanan Darah Diastole"
+                    },
+                    "effectiveDateTime": "'.$date.'",
+                    "issued": "'.$date.'",
+                    "valueQuantity": {
+                        "value": '.$diastole.',
+                        "unit": "mm[Hg]",
+                        "system": "http://unitsofmeasure.org",
+                        "code": "mm[Hg]"
+                    }
+                }',
+                CURLOPT_HTTPHEADER => array(
+                    'Content-Type: application/json',
+                    'Authorization: Bearer '.$this->token
+                ),
+            ));
+
+            $response = curl_exec($curl);
+
+            curl_close($curl);
+            $response = json_decode($response);
+            return $response;
+        }
+
+        public function suhu_tubuh($id_patient, $id_practitioner, $encounter_id, $date, $suhu_tubuh) //Suhu Tubuh
+        {
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => $this->url->base_url.'/Observation',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS =>'{
+                    "resourceType": "Observation",
+                    "status": "final",
+                    "category": [
+                        {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                    "code": "vital-signs",
+                                    "display": "Vital Signs"
+                                }
+                            ]
+                        }
+                    ],
+                    "code": {
+                        "coding": [
+                            {
+                                "system": "http://loinc.org",
+                                "code": "8310-5",
+                                "display": "Body temperature"
+                            }
+                        ]
+                    },
+                    "subject": {
+                        "reference": "Patient/'.$id_patient.'"
+                    },
+                    "performer": [
+                        {
+                            "reference": "Practitioner/'.$id_practitioner.'"
+                        }
+                    ],
+                    "encounter": {
+                        "reference": "Encounter/'.$encounter_id.'",
+                        "display": "Pemeriksaan Fisik Nadi"
+                    },
+                    "effectiveDateTime": "'.$date.'",
+                    "issued": "'.$date.'",
+                    "valueQuantity": {
+                        "value": '.$suhu_tubuh.',
+                        "unit": "C",
+                        "system": "http://unitsofmeasure.org",
+                        "code": "Cel"
+                    }
+                }',
+                CURLOPT_HTTPHEADER => array(
+                    'Content-Type: application/json',
+                    'Authorization: Bearer '.$this->token
+                ),
+            ));
+
+            $response = curl_exec($curl);
+
+            curl_close($curl);
+            $response = json_decode($response);
+            return $response;
+        }
+
+        public function denyut_jantung($id_patient, $id_practitioner, $encounter_id, $date, $denyut_jantung)
+        {
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => $this->url->base_url.'/Observation',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS =>'{
+                    "resourceType": "Observation",
+                    "status": "final",
+                    "category": [
+                        {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                    "code": "vital-signs",
+                                    "display": "Vital Signs"
+                                }
+                            ]
+                        }
+                    ],
+                    "code": {
+                        "coding": [
+                            {
+                                "system": "http://loinc.org",
+                                "code": "8867-4",
+                                "display": "Heart rate"
+                            }
+                        ]
+                    },
+                    "subject": {
+                        "reference": "Patient/'.$id_patient.'"
+                    },
+                    "encounter": {
+                        "reference": "Encounter/'.$encounter_id.'"
+                    },
+                    "effectiveDateTime": "'.$date.'",
+                    "issued": "'.$date.'",
+                    "performer": [
+                        {
+                            "reference": "Practitioner/'.$id_practitioner.'"
+                        }
+                    ],
+                    "valueQuantity": {
+                        "value": '.$denyut_jantung.',
+                        "unit": "{beats}/min",
+                        "system": "http://unitsofmeasure.org",
+                        "code": "{beats}/min"
+                    }
+                }',
+                CURLOPT_HTTPHEADER => array(
+                    'Content-Type: application/json',
+                    'Authorization: Bearer '.$this->token
+                ),
+            ));
+
+            $response = curl_exec($curl);
+
+            curl_close($curl);
+            $response = json_decode($response);
+            return $response;
+        }
+    // ==================================04. Hasil Pemeriksaan Fisik==================================
+
 
 
     // =========================10. Pemeriksaan Penunjang=======================

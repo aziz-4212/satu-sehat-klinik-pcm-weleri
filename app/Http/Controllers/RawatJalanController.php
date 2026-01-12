@@ -19,6 +19,8 @@ use App\Models\RJ_02_A_Kunjungan_Baru;
 use App\Models\RJ_02_A_Kunjungan_Baru_Log;
 use App\Models\RJ_02_B_Masuk_Ruang;
 use App\Models\RJ_02_B_Masuk_Ruang_Log;
+use App\Models\RJ_04_Pemeriksaan_Tanda_Tanda_Vital;
+use App\Models\RJ_04_Pemeriksaan_Tanda_Tanda_Vital_Log;
 use App\Models\RJ_12_Diagnosis;
 use App\Models\RJ_12_Diagnosis_Log;
 use App\Models\RJ_15_Medication_Obat;
@@ -469,7 +471,7 @@ class RawatJalanController extends Controller
                 }
 
                 $registrasi_pasien_terakhir = $registrasi_pasien_terakhir+1;
-                // $registrasi_pasien_terakhir = 17;
+                $registrasi_pasien_terakhir = 19;
                 $registrasi_pasien = Rekam::where('id', $registrasi_pasien_terakhir)->first();
 
                 if ($registrasi_pasien == null) {
@@ -567,13 +569,57 @@ class RawatJalanController extends Controller
 
                     // ===========================Masuk ke Ruang Pemeriksaan===========================
                         $encounter      = $encounter->id;
-                        // $encounter      = "fe40da59-beba-447d-bbbd-4f0b41e3d5da";
+                        // $encounter      = "4efb68c7-be49-4e58-a5bc-ffad84fc4f1b";
                         $datetime       = $date;
                         $datetime_end   = date('Y-m-d', strtotime($tanggal)).'T'.date('H:i:s', strtotime($jam . ' +15 minutes')).'.000+07:00';
                         $id_location    = "2b21293b-3cab-4c46-b7a0-9289e2526f2c";
                         $name_location  = "klinik dokter umum";
                         $this->masuk_ke_ruang_pemeriksaan_api($registrasi_pasien_terakhir, $encounter, $id_patient, $name_patient, $id_practitioner, $name_practitioner, $datetime, $datetime_end, $id_location, $name_location);
                     // ===========================Masuk ke Ruang Pemeriksaan===========================
+
+                    // ===========04. Hasil Pemeriksaan Fisik========
+                        // ===========Pemeriksaan Tanda Tanda Vital========
+                                $pemeriksaan_text = $registrasi_pasien->pemeriksaan;
+
+                                // Initialize variables
+                                $sistole = null;
+                                $diastole = null;
+                                $suhu_tubuh = null;
+                                $denyut_jantung = null;
+
+                                // Extract TD (Tekanan Darah) - systole and diastole
+                                if (preg_match('/TD\s+(\d+)\/(\d+)/i', $pemeriksaan_text, $matches)) {
+                                    $sistole = $matches[1];
+                                    $diastole = $matches[2];
+                                }
+
+                                // Extract TD with colon format (TD : systole/diastole)
+                                if (preg_match('/TD\s*:\s*(\d+)\/(\d+)/i', $pemeriksaan_text, $matches)) {
+                                    $sistole = $matches[1];
+                                    $diastole = $matches[2];
+                                }
+
+                                // Extract S (Suhu) - temperature
+                                if (preg_match('/S\s*:?\s*([\d,\.]+)/i', $pemeriksaan_text, $matches)) {
+                                    $suhu_tubuh = str_replace(',', '.', $matches[1]);
+                                }
+
+                                if (preg_match('/S\s+([\d,\.]+)/i', $pemeriksaan_text, $matches)) {
+                                    $suhu_tubuh = str_replace(',', '.', $matches[1]);
+                                }
+
+                                // Extract N (Nadi) - heart rate
+                                if (preg_match('/N\s*:?\s*(\d+)/i', $pemeriksaan_text, $matches)) {
+                                    $denyut_jantung = $matches[1];
+                                }
+
+                                if (preg_match('/N\s+(\d+)/i', $pemeriksaan_text, $matches)) {
+                                    $denyut_jantung = $matches[1];
+                                }
+
+                                $this->pemeriksaan_tanda_tanda_vital_api($registrasi_pasien_terakhir, $id_patient, $id_practitioner, $encounter, $date, $sistole, $diastole, $suhu_tubuh, $denyut_jantung);
+                        // ===========Pemeriksaan Tanda Tanda Vital========
+                    // ===========04. Hasil Pemeriksaan Fisik========
                 }else {
                     $log_encounter = new RJ_02_A_Kunjungan_Baru_Log();
                     $log_encounter->rekam_id = $registrasi_pasien_terakhir;
@@ -625,6 +671,107 @@ class RawatJalanController extends Controller
             }
         }
     // ===========End 02. Pendaftaran Kunjungan Rawat Jalan============
+
+    // ===========04. Hasil Pemeriksaan Fisik================
+        public function hasil_pemeriksaan_fisik_menu(){
+            return view('rawat-jalan.04_hasil_pemeriksaan_fisik.menu');
+        }
+
+        public function pemeriksaan_tanda_tanda_vital(Request $request){
+            if ($request->status == "error") {
+                $data = RJ_04_Pemeriksaan_Tanda_Tanda_Vital_Log::orderBy('id', 'desc')->paginate(25);
+            }else {
+                $data = RJ_04_Pemeriksaan_Tanda_Tanda_Vital::orderBy('id', 'desc')->paginate(25);
+            }
+            return view('rawat-jalan.04_hasil_pemeriksaan_fisik.pemeriksaan_tanda_tanda_vital.index', compact('data'));
+        }
+
+        public function pemeriksaan_tanda_tanda_vital_api($registrasi_pasien_terakhir, $id_patient, $id_practitioner, $encounter, $date, $sistole, $diastole, $suhu_tubuh, $denyut_jantung){
+            $RJ_04_Pemeriksaan_Tanda_Tanda_Vital = RJ_04_Pemeriksaan_Tanda_Tanda_Vital::where('rekam_id', $registrasi_pasien_terakhir)
+                                                    ->where('encounter', $encounter)
+                                                    ->first();
+            if ($RJ_04_Pemeriksaan_Tanda_Tanda_Vital == null) {
+                $RJ_04_Pemeriksaan_Tanda_Tanda_Vital = new RJ_04_Pemeriksaan_Tanda_Tanda_Vital();
+            }
+
+            $RJ_04_Pemeriksaan_Tanda_Tanda_Vital->rekam_id = $registrasi_pasien_terakhir;
+            $RJ_04_Pemeriksaan_Tanda_Tanda_Vital->encounter = $encounter;
+            if ($sistole != null) {
+                $data = $this->rawatJalan->tekanan_darah_sistole($id_patient, $id_practitioner, $encounter, $date, $sistole);
+                if (isset($data->id)) {
+                    $RJ_04_Pemeriksaan_Tanda_Tanda_Vital->td_sistolik_id = $data->id;
+                }else {
+                    $RJ_04_Pemeriksaan_Tanda_Tanda_Vital_Log = new RJ_04_Pemeriksaan_Tanda_Tanda_Vital_Log();
+                    $RJ_04_Pemeriksaan_Tanda_Tanda_Vital_Log->rekam_id = $registrasi_pasien_terakhir;
+                    $RJ_04_Pemeriksaan_Tanda_Tanda_Vital_Log->ket_log = json_encode($data);
+                    $RJ_04_Pemeriksaan_Tanda_Tanda_Vital_Log->save();
+                    return response()->json([
+                        'rekam_id' => $registrasi_pasien_terakhir,
+                        'message' => "Data tekanan darah sistole gagal dikirim",
+                        'nama schedule' => 'Pemeriksaan Tanda Tanda Vital'
+                    ], 200);
+                }
+            }
+
+            if ($diastole != null) {
+                $data = $this->rawatJalan->tekanan_darah_diastole($id_patient, $id_practitioner, $encounter, $date, $diastole);
+                if (isset($data->id)) {
+                    $RJ_04_Pemeriksaan_Tanda_Tanda_Vital->td_diastolik_id = $data->id;
+                }else {
+                    $RJ_04_Pemeriksaan_Tanda_Tanda_Vital_Log = new RJ_04_Pemeriksaan_Tanda_Tanda_Vital_Log();
+                    $RJ_04_Pemeriksaan_Tanda_Tanda_Vital_Log->rekam_id = $registrasi_pasien_terakhir;
+                    $RJ_04_Pemeriksaan_Tanda_Tanda_Vital_Log->ket_log = json_encode($data);
+                    $RJ_04_Pemeriksaan_Tanda_Tanda_Vital_Log->save();
+                    return response()->json([
+                        'rekam_id' => $registrasi_pasien_terakhir,
+                        'message' => "Data tekanan darah diastole gagal dikirim",
+                        'nama schedule' => 'Pemeriksaan Tanda Tanda Vital'
+                    ], 200);
+                }
+            }
+
+            if ($suhu_tubuh != null) {
+                $data = $this->rawatJalan->suhu_tubuh($id_patient, $id_practitioner, $encounter, $date, $suhu_tubuh);
+                if (isset($data->id)) {
+                    $RJ_04_Pemeriksaan_Tanda_Tanda_Vital->suhu_tubuh_id = $data->id;
+                }else {
+                    $RJ_04_Pemeriksaan_Tanda_Tanda_Vital_Log = new RJ_04_Pemeriksaan_Tanda_Tanda_Vital_Log();
+                    $RJ_04_Pemeriksaan_Tanda_Tanda_Vital_Log->rekam_id = $registrasi_pasien_terakhir;
+                    $RJ_04_Pemeriksaan_Tanda_Tanda_Vital_Log->ket_log = json_encode($data);
+                    $RJ_04_Pemeriksaan_Tanda_Tanda_Vital_Log->save();
+                    return response()->json([
+                        'rekam_id' => $registrasi_pasien_terakhir,
+                        'message' => "Data suhu tubuh gagal dikirim",
+                        'nama schedule' => 'Pemeriksaan Tanda Tanda Vital'
+                    ], 200);
+                }
+            }
+
+            if ($denyut_jantung != null) {
+                $data = $this->rawatJalan->denyut_jantung($id_patient, $id_practitioner, $encounter, $date, $denyut_jantung);
+                if (isset($data->id)) {
+                    $RJ_04_Pemeriksaan_Tanda_Tanda_Vital->denyut_jantung_id = $data->id;
+                }else {
+                    $RJ_04_Pemeriksaan_Tanda_Tanda_Vital_Log = new RJ_04_Pemeriksaan_Tanda_Tanda_Vital_Log();
+                    $RJ_04_Pemeriksaan_Tanda_Tanda_Vital_Log->rekam_id = $registrasi_pasien_terakhir;
+                    $RJ_04_Pemeriksaan_Tanda_Tanda_Vital_Log->ket_log = json_encode($data);
+                    $RJ_04_Pemeriksaan_Tanda_Tanda_Vital_Log->save();
+                    return response()->json([
+                        'rekam_id' => $registrasi_pasien_terakhir,
+                        'message' => "Data denyut jantung gagal dikirim",
+                        'nama schedule' => 'Pemeriksaan Tanda Tanda Vital'
+                    ], 200);
+                }
+            }
+
+            $RJ_04_Pemeriksaan_Tanda_Tanda_Vital->save();
+            return response()->json([
+                'rekam_id' => $registrasi_pasien_terakhir,
+                'message' => 'Data Pemeriksaan Tanda Tanda Vital sukses dikirim',
+                'nama schedule' => 'Pemeriksaan Tanda Tanda Vital'
+            ], 200);
+        }
+    // ===========End 04. Hasil Pemeriksaan Fisik============
 
     // =========================10. Pemeriksaan Penunjang=======================
         // =========================Laboratorium=======================

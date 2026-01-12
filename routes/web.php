@@ -48,6 +48,12 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/rawat-jalan/menu/pendaftaran-kunjungan-rawat-jalan/menu/pembuatan-kunjungan-baru', [App\Http\Controllers\RawatJalanController::class, 'pembuatan_kunjungan_baru'])->name('rawat-jalan.pendaftaran-kunjungan-rawat-jalan.pembuatan-kunjungan-baru');
             Route::get('/rawat-jalan/menu/pendaftaran-kunjungan-rawat-jalan/menu/masuk-ke-ruang-pemeriksaan', [App\Http\Controllers\RawatJalanController::class, 'masuk_ke_ruang_pemeriksaan'])->name('rawat-jalan.pendaftaran-kunjungan-rawat-jalan.masuk-ke-ruang-pemeriksaan');
         // ===========End 02. Pendaftaran Kunjungan Rawat Jalan========
+        // ===========04. Hasil Pemeriksaan Fisik========
+            Route::get('/rawat-jalan/menu/hasil-pemeriksaan-fisik/menu', [App\Http\Controllers\RawatJalanController::class, 'hasil_pemeriksaan_fisik_menu'])->name('rawat-jalan.hasil-pemeriksaan-fisik.menu');
+            // ===========Pemeriksaan Tanda Tanda Vital========
+                Route::get('/rawat-jalan/menu/hasil-pemeriksaan-fisik/pemeriksaan-tanda-tanda-vital', [App\Http\Controllers\RawatJalanController::class, 'pemeriksaan_tanda_tanda_vital'])->name('rawat-jalan.hasil-pemeriksaan-fisik.pemeriksaan-tanda-tanda-vital');
+            // ===========Pemeriksaan Tanda Tanda Vital========
+        // ===========End 04. Hasil Pemeriksaan Fisik========
         // ===========12. Diagnosis========
             Route::get('/rawat-jalan/menu/diagnosis/menu', [App\Http\Controllers\RawatJalanController::class, 'diagnosis_menu'])->name('rawat-jalan.diagnosis.menu');
             Route::get('/rawat-jalan/menu/diagnosis/menu/diagnosis-index', [App\Http\Controllers\RawatJalanController::class, 'diagnosis_index'])->name('rawat-jalan.diagnosis.index');
