@@ -54,6 +54,9 @@ Route::middleware(['auth'])->group(function () {
                 Route::get('/rawat-jalan/menu/hasil-pemeriksaan-fisik/pemeriksaan-tanda-tanda-vital', [App\Http\Controllers\RawatJalanController::class, 'pemeriksaan_tanda_tanda_vital'])->name('rawat-jalan.hasil-pemeriksaan-fisik.pemeriksaan-tanda-tanda-vital');
             // ===========Pemeriksaan Tanda Tanda Vital========
         // ===========End 04. Hasil Pemeriksaan Fisik========
+        // ===========06. Riwayat Perjalanan Penyakit========
+            Route::get('/rawat-jalan/menu/riwayat-perjalanan-penyakit', [App\Http\Controllers\RawatJalanController::class, 'riwayat_perjalanan_penyakit_index'])->name('rawat-jalan.riwayat-perjalanan-penyakit.index');
+        // ===========End 06. Riwayat Perjalanan Penyakit====
         // ===========12. Diagnosis========
             Route::get('/rawat-jalan/menu/diagnosis/menu', [App\Http\Controllers\RawatJalanController::class, 'diagnosis_menu'])->name('rawat-jalan.diagnosis.menu');
             Route::get('/rawat-jalan/menu/diagnosis/menu/diagnosis-index', [App\Http\Controllers\RawatJalanController::class, 'diagnosis_index'])->name('rawat-jalan.diagnosis.index');

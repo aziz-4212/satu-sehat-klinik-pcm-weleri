@@ -21,6 +21,8 @@ use App\Models\RJ_02_B_Masuk_Ruang;
 use App\Models\RJ_02_B_Masuk_Ruang_Log;
 use App\Models\RJ_04_Pemeriksaan_Tanda_Tanda_Vital;
 use App\Models\RJ_04_Pemeriksaan_Tanda_Tanda_Vital_Log;
+use App\Models\RJ_06_Riwayat_Perjalanan_Penyakit;
+use App\Models\RJ_06_Riwayat_Perjalanan_Penyakit_Log;
 use App\Models\RJ_12_Diagnosis;
 use App\Models\RJ_12_Diagnosis_Log;
 use App\Models\RJ_15_Medication_Obat;
@@ -620,6 +622,11 @@ class RawatJalanController extends Controller
                                 $this->pemeriksaan_tanda_tanda_vital_api($registrasi_pasien_terakhir, $id_patient, $id_practitioner, $encounter, $date, $sistole, $diastole, $suhu_tubuh, $denyut_jantung);
                         // ===========Pemeriksaan Tanda Tanda Vital========
                     // ===========04. Hasil Pemeriksaan Fisik========
+
+                    // ===========06. Riwayat Perjalanan Penyakit========
+                        $data_riwayat = $registrasi_pasien->keluhan;
+                        $this->riwayat_perjalanan_penyakit_ip($id_patient, $name_patient, $id_practitioner, $encounter, $date, $data_riwayat);
+                    // ===========06. Riwayat Perjalanan Penyakit========
                 }else {
                     $log_encounter = new RJ_02_A_Kunjungan_Baru_Log();
                     $log_encounter->rekam_id = $registrasi_pasien_terakhir;
@@ -772,6 +779,43 @@ class RawatJalanController extends Controller
             ], 200);
         }
     // ===========End 04. Hasil Pemeriksaan Fisik============
+    // ===========06. Riwayat Perjalanan Penyakit============
+        public function riwayat_perjalanan_penyakit_index(Request $request){
+            if ($request->status == "error") {
+                $data = RJ_06_Riwayat_Perjalanan_Penyakit_Log::orderBy('id', 'desc')->paginate(25);
+            }else {
+                $data = RJ_06_Riwayat_Perjalanan_Penyakit::orderBy('id', 'desc')->paginate(25);
+            }
+            return view('rawat-jalan.06-riwayat-perjalanan-penyakit.index', compact('data'));
+        }
+        public function riwayat_perjalanan_penyakit_ip($id_patient, $name_patient, $id_practitioner, $encounter_id, $date, $data_riwayat){
+            set_time_limit((int) 0);
+            $data = $this->rawatJalan->riwayat_perjalanan_penyakit($id_patient, $name_patient, $id_practitioner, $encounter_id, $date, $data_riwayat);
+            if (isset($data->id)) {
+                $rj_masuk_ruang_model = new RJ_06_Riwayat_Perjalanan_Penyakit();
+                $rj_masuk_ruang_model->encounter = $encounter_id;
+                $rj_masuk_ruang_model->rekam_id = $rekam_id;
+                $rj_masuk_ruang_model->satu_sehat_id = $data->id;
+                $rj_masuk_ruang_model->save();
+
+                return response()->json([
+                    'rekam_id' => $rekam_id,
+                    'message' => 'Data Riwayat Perjalanan Penyakit sukses dikirim',
+                    'nama schedule' => 'Riwayat Perjalanan Penyakit'
+                ], 200);
+            }else {
+                $RJ_06_Riwayat_Perjalanan_Penyakit_Log = new RJ_06_Riwayat_Perjalanan_Penyakit_Log();
+                $RJ_06_Riwayat_Perjalanan_Penyakit_Log->rekam_id = $rekam_id;
+                $RJ_06_Riwayat_Perjalanan_Penyakit_Log->ket_log = json_encode($data);
+                $RJ_06_Riwayat_Perjalanan_Penyakit_Log->save();
+                return response()->json([
+                    'rekam_id' => $rekam_id,
+                    'message' => "Data Riwayat Perjalanan Penyakit gagal dikirim",
+                    'nama schedule' => 'Riwayat Perjalanan Penyakit'
+                ], 200);
+            }
+        }
+    // ===========End 06. Riwayat Perjalanan Penyakit========
 
     // =========================10. Pemeriksaan Penunjang=======================
         // =========================Laboratorium=======================

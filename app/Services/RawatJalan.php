@@ -1035,6 +1035,60 @@ class RawatJalan
         }
     // ==================================04. Hasil Pemeriksaan Fisik==================================
 
+    // ==================================06. Riwayat Perjalanan Penyakit==================================
+        public function riwayat_perjalanan_penyakit($id_patient, $name_patient, $id_practitioner, $encounter_id, $date, $data_riwayat)
+        {
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => $this->url->base_url.'/ClinicalImpression',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS =>'{
+                    "resourceType": "ClinicalImpression",
+                    "status": "completed",
+                    "code": {
+                        "coding": [
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "312850006",
+                                "display": "History of disorder"
+                            }
+                        ]
+                    },
+                    "subject": {
+                        "reference": "Patient/'.$id_patient.'",
+                        "display": "'.$name_patient.'"
+                    },
+                    "encounter": {
+                        "reference": "Encounter/'.$encounter_id.'"
+                    },
+                    "effectiveDateTime": "'.$date.'",
+                    "date": "'.$date.'",
+                    "assessor": {
+                        "reference": "Practitioner/'.$id_practitioner.'"
+                    },
+                    "summary": "'.$data_riwayat.'"
+                }',
+                CURLOPT_HTTPHEADER => array(
+                    'Content-Type: application/json',
+                    'Authorization: Bearer '.$this->token
+                ),
+            ));
+
+            $response = curl_exec($curl);
+
+            curl_close($curl);
+            $response = json_decode($response);
+            return $response;
+        }
+    // ==================================06. Riwayat Perjalanan Penyakit==================================
+
 
 
     // =========================10. Pemeriksaan Penunjang=======================

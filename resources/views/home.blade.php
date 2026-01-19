@@ -130,14 +130,6 @@
                         <i class="fas fa-walking mr-2"></i>
                         Dashboard Rawat Jalan
                     </button>
-                    <button class="btn btn-warning btn-block mb-3" onclick="window.location.href='{{ route('dashboard.rawat-inap') }}'">
-                        <i class="fas fa-bed mr-2"></i>
-                        Dashboard Rawat Inap
-                    </button>
-                    <button class="btn btn-danger btn-block mb-3" onclick="window.location.href='{{ route('dashboard.igd') }}'">
-                        <i class="fas fa-ambulance mr-2"></i>
-                        Dashboard IGD
-                    </button>
                     <button class="btn btn-success btn-block" onclick="syncData()">
                         <i class="fas fa-sync mr-2"></i>
                         Sinkronkan Data
