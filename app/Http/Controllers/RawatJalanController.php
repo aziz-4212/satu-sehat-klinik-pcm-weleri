@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Services\Patient;
 use App\Services\RawatJalan;
 use App\Models\Rekam;
+use App\Models\RekamLaborat;
 use App\Models\Pasien;
 use App\Models\Obat;
 use App\Models\RJ00UkpKefarmasianLaboratorium;
@@ -473,9 +474,8 @@ class RawatJalanController extends Controller
                 }
 
                 $registrasi_pasien_terakhir = $registrasi_pasien_terakhir+1;
-                $registrasi_pasien_terakhir = 19;
+                $registrasi_pasien_terakhir = 14;
                 $registrasi_pasien = Rekam::where('id', $registrasi_pasien_terakhir)->first();
-
                 if ($registrasi_pasien == null) {
                     $log_encounter = new RJ_02_A_Kunjungan_Baru_Log();
                     $log_encounter->rekam_id = $registrasi_pasien_terakhir;
@@ -571,7 +571,7 @@ class RawatJalanController extends Controller
 
                     // ===========================Masuk ke Ruang Pemeriksaan===========================
                         $encounter      = $encounter->id;
-                        // $encounter      = "4efb68c7-be49-4e58-a5bc-ffad84fc4f1b";
+                        $encounter      = "cadd70d7-ad0d-4b19-adc6-f183d785d737";
                         $datetime       = $date;
                         $datetime_end   = date('Y-m-d', strtotime($tanggal)).'T'.date('H:i:s', strtotime($jam . ' +15 minutes')).'.000+07:00';
                         $id_location    = "2b21293b-3cab-4c46-b7a0-9289e2526f2c";
@@ -627,6 +627,27 @@ class RawatJalanController extends Controller
                         $data_riwayat = $registrasi_pasien->keluhan;
                         $this->riwayat_perjalanan_penyakit_ip($id_patient, $name_patient, $id_practitioner, $encounter, $date, $data_riwayat);
                     // ===========06. Riwayat Perjalanan Penyakit========
+
+
+                    // =========================10. Pemeriksaan Penunjang=======================
+                        // =========================Laboratorium=======================
+                            $rekam_laborat = RekamLaborat::where('rekam_id', $registrasi_pasien_terakhir)->get();
+                            if ($rekam_laborat->count() != 0) {
+                                foreach ($rekam_laborat as $item) {
+                                    $kode_loinc = $item->master_laboratorium->loinc_req;
+                                    $nama_loinc = $item->master_laboratorium->loinc_req;
+                                    $deskripsi_loinc = $item->master_laboratorium->loinc_req;
+                                    $kode_pemeriksaan = $item->master_laboratorium->kode;
+                                    $kode_snomed = $item->master_laboratorium->spec_snomed_code;
+                                    $nama_snomed = $item->master_laboratorium->spec_snomed_name;
+                                    $value = preg_replace('/[^0-9,.]/', '', $item->hasil);
+                                    $value = str_replace(',', '.', $value);
+                                    $satuan = $item->master_laboratorium->satuan;
+                                    $this->laboratory_api($registrasi_pasien_terakhir, $id_patient, $name_patient, $encounter, $id_practitioner, $name_practitioner, $datetime, $datetime_end, $kode_pemeriksaan, $kode_loinc, $nama_loinc, $deskripsi_loinc, $kode_snomed, $nama_snomed, $value, $satuan);
+                                }
+                            }
+                        // =========================End Laboratorium===================
+                    // =========================End 10. Pemeriksaan Penunjang===================
                 }else {
                     $log_encounter = new RJ_02_A_Kunjungan_Baru_Log();
                     $log_encounter->rekam_id = $registrasi_pasien_terakhir;
@@ -818,166 +839,37 @@ class RawatJalanController extends Controller
     // ===========End 06. Riwayat Perjalanan Penyakit========
 
     // =========================10. Pemeriksaan Penunjang=======================
+        public function pemeriksaan_penunjang_menu(){
+            return view('rawat-jalan.10-pemeriksaan-penunjang.menu');
+        }
         // =========================Laboratorium=======================
-            public function laboratory_api(Request $request){
+            public function laboratorium_index(Request $request){
+                if ($request->status == "error") {
+                    $data = RJ_10_laboratory_Log::orderBy('id', 'desc')->paginate(25);
+                }else {
+                    $data = RJ_10_laboratory::orderBy('id', 'desc')->paginate(25);
+                }
+                return view('rawat-jalan.10-pemeriksaan-penunjang.laboratorium.index', compact('data'));
+            }
+
+            public function laboratory_api($registrasi_pasien_terakhir, $id_patient, $name_patient, $encounter, $id_practitioner, $name_practitioner, $datetime, $datetime_end, $kode_pemeriksaan, $kode_loinc, $nama_loinc, $deskripsi_loinc, $kode_snomed, $nama_snomed, $value, $satuan){
                 set_time_limit((int) 0);
-                // $RJ_10_laboratory = RJ_10_laboratory::orderBy('noreg', 'desc')->pluck('noreg')->first();
-                // $RJ_10_laboratory_Log = RJ_10_laboratory_Log::orderBy('noreg', 'desc')->pluck('noreg')->first();
-                // if ($RJ_10_laboratory == null && $RJ_10_laboratory_Log == null) {
-                //     $noreg_terakhir = RJ_02_A_Kunjungan_Baru::orderBy('noreg', 'asc')->pluck('noreg')->first();
-                // }elseif ($RJ_10_laboratory > $RJ_10_laboratory_Log) {
-                //     $noreg_terakhir = $RJ_10_laboratory;
-                // }elseif ($RJ_10_laboratory < $RJ_10_laboratory_Log) {
-                //     $noreg_terakhir = $RJ_10_laboratory_Log;
-                // }elseif ($RJ_10_laboratory == $RJ_10_laboratory_Log) {
-                //     $noreg_terakhir = $RJ_10_laboratory;
-                // }
-
-                // $noreg_terakhir = $noreg_terakhir+1;
-                // $noreg_tanggal_depan = (substr($noreg_terakhir, 0, -4)+1)."0000";
-                // $data_tanggal_terakhir = RJ_02_A_Kunjungan_Baru::where('noreg', "<",$noreg_tanggal_depan)->orderBy('noreg', 'desc')->pluck('noreg')->first();
-                // if ($noreg_terakhir > $data_tanggal_terakhir) {
-                //     $noreg_terakhir = $noreg_tanggal_depan+1;
-                // }
-
-                // //berhentikan sebelum noreg hari sekarang
-                // $now = Carbon::now()->setTimezone('Asia/Jakarta')->format('ymd');
-                // $noreg_batas = (Integer)($now . '0000');
-                // if ($noreg_terakhir > $noreg_batas) {
-                //     return response()->json([
-                //         'noreg' => $noreg_terakhir,
-                //         'message' => "Noreg Dalam Pelayanan",
-                //         'nama schedule' => 'Laboratorium'
-                //     ], 200);
-                // }
-
-                // if (substr($noreg_terakhir, 2, 4) == '1232') {
-                //     $noreg_terakhir += 100000000;
-                //     $noreg_terakhir = substr_replace($noreg_terakhir, '0101', 2, 4);
-                // }
-
-                // $data_terbesar = RJ_02_A_Kunjungan_Baru::orderBy('noreg', 'desc')->pluck('noreg')->first();
-                // if ($noreg_terakhir > $data_terbesar) {
-                //     return response()->json([
-                //         'noreg' => $noreg_terakhir,
-                //         'message' => "Noreg Belum Terdaftar",
-                //         'nama schedule' => 'Laboratorium'
-                //     ], 200);
-                // }
-
-                $noreg_terakhir = '2508020017';
-
-                $mapping_kunjungan_poli = RJ_02_A_Kunjungan_Baru::where('noreg', $noreg_terakhir)->first();
-                if ($mapping_kunjungan_poli == null) {
-                    $this->pembuatan_kunjungan_baru_api($request, $noreg_terakhir);
-                    $mapping_kunjungan_poli = RJ_02_A_Kunjungan_Baru::where('noreg', $noreg_terakhir)->first();
-                    // $RJ_10_laboratory_Log = new RJ_10_laboratory_Log();
-                    // $RJ_10_laboratory_Log->noreg = $noreg_terakhir;
-                    // $RJ_10_laboratory_Log->ket_log = 'Mapping kunjungan poli tidak ditemukan';
-                    // $RJ_10_laboratory_Log->save();
-                    // return response()->json([
-                    //     'noreg' => $noreg_terakhir,
-                    //     'message' => "Mapping kunjungan poli tidak ditemukan",
-                    //     'nama schedule' => 'Laboratorium'
-                    // ], 200);
-                }
-                $registrasi_pasien = RegistrasiPasien::where('NOREG', $noreg_terakhir)->first();
-                if ($registrasi_pasien == null) {
-                    $RJ_10_laboratory_Log = new RJ_10_laboratory_Log();
-                    $RJ_10_laboratory_Log->noreg = $noreg_terakhir;
-                    $RJ_10_laboratory_Log->ket_log = 'Noreg Belum Terdaftar';
-                    $RJ_10_laboratory_Log->save();
-                    return response()->json([
-                        'noreg' => $noreg_terakhir,
-                        'message' => "Noreg Belum Terdaftar",
-                        'nama schedule' => 'Laboratorium'
-                    ], 200);
-                }
-
-                $data_pasien = $this->patient->search_nik($registrasi_pasien->Pasien->NOKTP);
-                if (!(is_object($data_pasien) && property_exists($data_pasien, 'total') && $data_pasien->total != 0)) {
-                    $RJ_15_Medication_Request_Log = new RJ_10_laboratory_Log();
-                    $RJ_15_Medication_Request_Log->noreg = $noreg_terakhir;
-                    $RJ_15_Medication_Request_Log->ket_log = 'NIK '.$registrasi_pasien->Pasien->NAMAPASIEN.' Tidak Ditemukan';
-                    $RJ_15_Medication_Request_Log->save();
-                    return response()->json([
-                        'noreg' => $noreg_terakhir,
-                        'message' => 'NIK '.$registrasi_pasien->Pasien->NAMAPASIEN.' Tidak Ditemukan',
-                        'nama schedule' => 'pendaftaran pendataan pasien'
-                    ], 200);
-                }
-
-                // $mapping_dokter_spesialis = RJ_01_Practitioner::where('kode_dokter', $registrasi_pasien->Registrasi_Dokter->KODEDOKTER)->first();
-                // if ($mapping_dokter_spesialis == null) {
-                //     $RJ_10_laboratory_Log = new RJ_10_laboratory_Log();
-                //     $RJ_10_laboratory_Log->noreg = $noreg_terakhir;
-                //     $RJ_10_laboratory_Log->ket_log = "Dokter untuk Pasien ".$registrasi_pasien->Pasien->NAMAPASIEN." Tidak Ditemukan Di Mapping Dokter Spesialis";
-                //     $RJ_10_laboratory_Log->save();
-                //     return response()->json([
-                //         'noreg' => $noreg_terakhir,
-                //         'message' => "Dokter untuk Pasien ".$registrasi_pasien->Pasien->NAMAPASIEN." Tidak Ditemukan Di Mapping Dokter Spesialis",
-                //         'nama schedule' => 'Laboratorium'
-                //     ], 200);
-                // }
-
-                // $trxpmr = Trxpmr::where('NOREG', (string) $noreg_terakhir)
-                //             ->where('KODEBAGIAN', '9404')
-                //             ->whereNotNull('NOUPMR')
-                //             ->first();
-                // if ($trxpmr == null) {
-                //     $RJ_10_laboratory_Log = new RJ_10_laboratory_Log();
-                //     $RJ_10_laboratory_Log->noreg = $noreg_terakhir;
-                //     $RJ_10_laboratory_Log->ket_log = "Tidak ada data pemeriksaan laboratorium pada noreg ini";
-                //     $RJ_10_laboratory_Log->save();
-                //     return response()->json([
-                //         'noreg' => $noreg_terakhir,
-                //         'message' => "Tidak ada data pemeriksaan laboratorium pada noreg ini",
-                //         'nama schedule' => 'Laboratorium'
-                //     ], 200);
-                // }
-
-                // $hasil_lis = HasilLis::where('NOLAB_RS', $trxpmr->NOUPMR)
-                //                 ->orWhere('NOLAB_RS', 'LIS'.$trxpmr->NOUPMR)
-                //                 ->first();
-                $hasil_lis = HasilLis::where('NOREG', $noreg_terakhir)
-                                ->first();
-                if ($hasil_lis == null) {
-                    $RJ_10_laboratory_Log = new RJ_10_laboratory_Log();
-                    $RJ_10_laboratory_Log->noreg = $noreg_terakhir;
-                    $RJ_10_laboratory_Log->ket_log = "Tidak ada data pemeriksaan laboratorium pada noreg ini";
-                    $RJ_10_laboratory_Log->save();
-                    return response()->json([
-                        'noreg' => $noreg_terakhir,
-                        'message' => "Tidak ada data pemeriksaan laboratorium pada noreg ini",
-                        'nama schedule' => 'Laboratorium'
-                    ], 200);
-                }
-
-                $data_lab = HasilLis::where('PARAMETER_NAME', $hasil_lis->PARAMETER_NAME)
-                        ->where('loinc_req', '!=', null)
-                        ->first();
-
-                if ($data_lab == null) {
-                    $RJ_10_laboratory_Log = new RJ_10_laboratory_Log();
-                    $RJ_10_laboratory_Log->noreg = $noreg_terakhir;
-                    $RJ_10_laboratory_Log->ket_log = "Parameter Loinc untuk ".$hasil_lis->PARAMETER_NAME." tidak ditemukan";
-                    $RJ_10_laboratory_Log->save();
-                }
-
-                $Cek_RJ_10_laboratory = RJ_10_laboratory::where('encounter', $mapping_kunjungan_poli->encounter)
-                                        ->where('noreg', $noreg_terakhir)
-                                        ->where('kode_pemeriksaan', $hasil_lis->kode)
+                $Cek_RJ_10_laboratory = RJ_10_laboratory::where('encounter', $encounter)
+                                        ->where('rekam_id', $registrasi_pasien_terakhir)
+                                        ->where('kode_pemeriksaan', $kode_pemeriksaan)
                                         ->first();
+
                 if ($Cek_RJ_10_laboratory == null) {
                     $RJ_10_laboratory_new = new RJ_10_laboratory();
-                    $RJ_10_laboratory_new->encounter = $mapping_kunjungan_poli->encounter;
-                    $RJ_10_laboratory_new->noreg = $noreg_terakhir;
-                    $RJ_10_laboratory_new->kode_pemeriksaan = $hasil_lis->kode;
+                    $RJ_10_laboratory_new->encounter = $encounter;
+                    $RJ_10_laboratory_new->rekam_id = $registrasi_pasien_terakhir;
+                    $RJ_10_laboratory_new->kode_pemeriksaan = $kode_pemeriksaan;
                     $RJ_10_laboratory_new->save();
                 }
-                $RJ_10_laboratory_update = RJ_10_laboratory::where('encounter', $mapping_kunjungan_poli->encounter)
-                                        ->where('noreg', $noreg_terakhir)
-                                        ->where('kode_pemeriksaan', $hasil_lis->kode)
+
+                $RJ_10_laboratory_update = RJ_10_laboratory::where('encounter', $encounter)
+                                        ->where('rekam_id', $registrasi_pasien_terakhir)
+                                        ->where('kode_pemeriksaan', $kode_pemeriksaan)
                                         ->first();
 
                 if ($RJ_10_laboratory_update->procedure_id == null) {
@@ -985,16 +877,7 @@ class RawatJalanController extends Controller
                     $max_attempts = 5;
                     $procedure_data = null;
                     while ($attempts < $max_attempts) {
-                        $Patient_id             = $data_pasien->entry[0]->resource->id;
-                        $Patient_Name           = $data_pasien->entry[0]->resource->name[0]->text;
-                        $Encounter_id           = $mapping_kunjungan_poli->encounter;
-                        // $Practitioner_id        = $mapping_dokter_spesialis->satu_sehat_id;
-                        // $Practitioner_Name      = $mapping_dokter_spesialis->nama;
-                        $Practitioner_id        = '10013576199';
-                        $Practitioner_Name      = 'dr.Gusti Reka Kusuma';
-                        $start_date             = date('Y-m-d', strtotime($registrasi_pasien->TGLREG)).'T'.date('H:i:s', strtotime($registrasi_pasien->JAMREG)).'+07:00';
-                        $end_date               = date('Y-m-d', strtotime($registrasi_pasien->TGLREG)).'T'.date('H:i:s', strtotime($registrasi_pasien->JAMREG)).'+07:00';
-                        $procedure_data = $this->rawatJalan->procedure_status_puasa_laboratorium_nominal($Patient_id, $Patient_Name, $Encounter_id, $Practitioner_id, $Practitioner_Name, $start_date, $end_date);
+                        $procedure_data = $this->rawatJalan->procedure_status_puasa_laboratorium_nominal($id_patient, $name_patient, $encounter, $id_practitioner, $name_practitioner, $datetime, $datetime_end);
                         if (isset($procedure_data->id)) {
                             $RJ_10_laboratory_update->procedure_id = $procedure_data->id;
                             $RJ_10_laboratory_update->save();
@@ -1003,11 +886,11 @@ class RawatJalanController extends Controller
                             $attempts++;
                             if ($attempts >= $max_attempts) {
                                 $RJ_10_laboratory_Log = new RJ_10_laboratory_Log();
-                                $RJ_10_laboratory_Log->noreg = $noreg_terakhir;
+                                $RJ_10_laboratory_Log->rekam_id = $registrasi_pasien_terakhir;
                                 $RJ_10_laboratory_Log->ket_log = json_encode($procedure_data);
                                 $RJ_10_laboratory_Log->save();
                                 return response()->json([
-                                    'noreg' => $noreg_terakhir,
+                                    'rekam_id' => $registrasi_pasien_terakhir,
                                     'message' => "prosedur laboratorium gagal setelah beberapa kali percobaan",
                                     'nama schedule' => 'Laboratorium'
                                 ], 200);
@@ -1017,9 +900,9 @@ class RawatJalanController extends Controller
                     }
                 }
 
-                $RJ_10_laboratory_update = RJ_10_laboratory::where('encounter', $mapping_kunjungan_poli->encounter)
-                                        ->where('noreg', $noreg_terakhir)
-                                        ->where('kode_pemeriksaan', $hasil_lis->kode)
+                $RJ_10_laboratory_update = RJ_10_laboratory::where('encounter', $encounter)
+                                        ->where('rekam_id', $registrasi_pasien_terakhir)
+                                        ->where('kode_pemeriksaan', $kode_pemeriksaan)
                                         ->first();
 
                 if ($RJ_10_laboratory_update->service_request_id == null) {
@@ -1027,25 +910,12 @@ class RawatJalanController extends Controller
                     $max_attempts = 5;
                     $service_request_data = null;
                     while ($attempts < $max_attempts) {
-                        $Noreg                  = (string) $noreg_terakhir;
-                        $Patient_id             = $data_pasien->entry[0]->resource->id;
-                        $Patient_Name           = $data_pasien->entry[0]->resource->name[0]->text;
-                        $Encounter_id           = $mapping_kunjungan_poli->encounter;
-                        // $Practitioner_id        = $mapping_dokter_spesialis->satu_sehat_id;
-                        // $Practitioner_Name      = $mapping_dokter_spesialis->nama;
-                        $Practitioner_id        = '10013576199';
-                        $Practitioner_Name      = 'dr.Gusti Reka Kusuma';
-                        $start_date             = date('Y-m-d', strtotime($registrasi_pasien->TGLREG)).'T'.date('H:i:s', strtotime($registrasi_pasien->JAMREG)).'+07:00';
-                        $end_date               = date('Y-m-d', strtotime($registrasi_pasien->TGLREG)).'T'.date('H:i:s', strtotime($registrasi_pasien->JAMREG)).'+07:00';
-                        $kode_loinc             = $data_lab->LOINC_REQ;
-                        $nama_loinc             = $data_lab->LOINC_REQ;
-                        $deskripsi_loinc        = $data_lab->LOINC_REQ;
                         try {
                             $Procedure_Id       = $procedure_data->id;
                         } catch (\Throwable $th) {
                             $Procedure_Id       = $RJ_10_laboratory_update->procedure_id;
                         }
-                        $service_request_data = $this->rawatJalan->service_request_laboratorium_nominal($Noreg, $Patient_id, $Patient_Name, $Encounter_id, $Practitioner_id, $Practitioner_Name, $start_date, $end_date, $kode_loinc, $nama_loinc, $deskripsi_loinc, $Procedure_Id);
+                        $service_request_data = $this->rawatJalan->service_request_laboratorium_nominal($registrasi_pasien_terakhir, $id_patient, $name_patient, $encounter, $id_practitioner, $name_practitioner, $datetime, $datetime_end, $kode_loinc, $nama_loinc, $deskripsi_loinc, $Procedure_Id);
                         if (isset($service_request_data->id)) {
                             $RJ_10_laboratory_update->service_request_id = $service_request_data->id;
                             $RJ_10_laboratory_update->save();
@@ -1054,11 +924,11 @@ class RawatJalanController extends Controller
                             $attempts++;
                             if ($attempts >= $max_attempts) {
                                 $RJ_10_laboratory_Log = new RJ_10_laboratory_Log();
-                                $RJ_10_laboratory_Log->noreg = $noreg_terakhir;
+                                $RJ_10_laboratory_Log->rekam_id = $registrasi_pasien_terakhir;
                                 $RJ_10_laboratory_Log->ket_log = json_encode($service_request_data);
                                 $RJ_10_laboratory_Log->save();
                                 return response()->json([
-                                    'noreg' => $noreg_terakhir,
+                                    'rekam_id' => $registrasi_pasien_terakhir,
                                     'message' => "service request laboratorium gagal setelah beberapa kali percobaan",
                                     'nama schedule' => 'Laboratorium'
                                 ], 200);
@@ -1068,25 +938,22 @@ class RawatJalanController extends Controller
                     }
                 }
 
+                $RJ_10_laboratory_update = RJ_10_laboratory::where('encounter', $encounter)
+                                        ->where('rekam_id', $registrasi_pasien_terakhir)
+                                        ->where('kode_pemeriksaan', $kode_pemeriksaan)
+                                        ->first();
+
                 if ($RJ_10_laboratory_update->specimen_id == null) {
                     $attempts = 0;
                     $max_attempts = 5;
                     $specimen_data = null;
                     while ($attempts < $max_attempts) {
-                        $Noreg                  = (string) $noreg_terakhir;
-                        $Patient_id             = $data_pasien->entry[0]->resource->id;
-                        $Patient_Name           = $data_pasien->entry[0]->resource->name[0]->text;
-                        // $Practitioner_id        = $mapping_dokter_spesialis->satu_sehat_id;
-                        // $Practitioner_Name      = $mapping_dokter_spesialis->nama;
-                        $Practitioner_id        = '10013576199';
-                        $Practitioner_Name      = 'dr.Gusti Reka Kusuma';
-                        $date                   = date('Y-m-d', strtotime($registrasi_pasien->TGLREG)).'T'.date('H:i:s', strtotime($registrasi_pasien->JAMREG)).'+07:00';
-                        $kode_snomed            = $data_lab->SPEC_SNOMED_CODE;
-                        $nama_snomed            = $data_lab->SPEC_SNOMED_NAME;
-                        $value                  = explode('.', $hasil_lis->HASIL)[0];
-                        $satuan                 = $hasil_lis->SATUAN ?? $hasil_lis->HASIL;
-                        $service_request_id     = $RJ_10_laboratory_update->service_request_id;
-                        $specimen_data = $this->rawatJalan->specimen_laboratorium_nominal($Noreg, $Patient_id, $Patient_Name, $Practitioner_id, $Practitioner_Name, $date, $kode_snomed, $nama_snomed, $value, $satuan, $service_request_id);
+                        try {
+                            $service_request_id     = $service_request_data->id;
+                        } catch (\Throwable $th) {
+                            $service_request_id     = $RJ_10_laboratory_update->service_request_id;
+                        }
+                        $specimen_data = $this->rawatJalan->specimen_laboratorium_nominal($registrasi_pasien_terakhir, $id_patient, $name_patient, $id_practitioner, $name_practitioner, $datetime, $kode_snomed, $nama_snomed, $value, $satuan, $service_request_id);
                         if (isset($specimen_data->id)) {
                             $RJ_10_laboratory_update->specimen_id = $specimen_data->id;
                             $RJ_10_laboratory_update->save();
@@ -1095,11 +962,11 @@ class RawatJalanController extends Controller
                             $attempts++;
                             if ($attempts >= $max_attempts) {
                                 $RJ_10_laboratory_Log = new RJ_10_laboratory_Log();
-                                $RJ_10_laboratory_Log->noreg = $noreg_terakhir;
+                                $RJ_10_laboratory_Log->rekam_id = $registrasi_pasien_terakhir;
                                 $RJ_10_laboratory_Log->ket_log = json_encode($specimen_data);
                                 $RJ_10_laboratory_Log->save();
                                 return response()->json([
-                                    'noreg' => $noreg_terakhir,
+                                    'rekam_id' => $registrasi_pasien_terakhir,
                                     'message' => "specimen laboratorium gagal setelah beberapa kali percobaan",
                                     'nama schedule' => 'Laboratorium'
                                 ], 200);
@@ -1109,9 +976,9 @@ class RawatJalanController extends Controller
                     }
                 }
 
-                $RJ_10_laboratory_update = RJ_10_laboratory::where('encounter', $mapping_kunjungan_poli->encounter)
-                                        ->where('noreg', $noreg_terakhir)
-                                        ->where('kode_pemeriksaan', $hasil_lis->kode)
+                $RJ_10_laboratory_update = RJ_10_laboratory::where('encounter', $encounter)
+                                        ->where('rekam_id', $registrasi_pasien_terakhir)
+                                        ->where('kode_pemeriksaan', $kode_pemeriksaan)
                                         ->first();
 
                 if ($RJ_10_laboratory_update->observation_id == null) {
@@ -1119,12 +986,6 @@ class RawatJalanController extends Controller
                     $max_attempts = 5;
                     $observation_data = null;
                     while ($attempts < $max_attempts) {
-                        $Noreg                 = (string) $noreg_terakhir;
-                        $Patient_id            = $data_pasien->entry[0]->resource->id;
-                        // $Encounter_id          = $mapping_kunjungan_poli->encounter;
-                        // $Practitioner_id        = $mapping_dokter_spesialis->satu_sehat_id;
-                        $Practitioner_id        = '10013576199';
-                        $Practitioner_Name      = 'dr.Gusti Reka Kusuma';
                         try {
                             $Specimen_Id           = $specimen_data->id;
                             $ServiceRequest_Id     = $service_request_data->id;
@@ -1132,11 +993,7 @@ class RawatJalanController extends Controller
                             $Specimen_Id           = $RJ_10_laboratory_update->specimen_id;
                             $ServiceRequest_Id     = $RJ_10_laboratory_update->service_request_id;
                         }
-                        $loinc_code            = $data_lab->LOINC_REQ;
-                        $loinc_name            = $data_lab->LOINC_REQ;
-                        $request_date          = date('Y-m-d', strtotime($hasil_lis->REG_DATE)).'T'.date('H:i:s', strtotime($hasil_lis->REG_DATE)).'+07:00';
-                        $result_date           = date('Y-m-d', strtotime($hasil_lis->MODIFIED_DATE)).'T'.date('H:i:s', strtotime($hasil_lis->MODIFIED_DATE)).'+07:00';
-                        $observation_data = $this->rawatJalan->observation_laboratorium_nominal($Noreg, $Patient_id, $Encounter_id, $Practitioner_id, $Specimen_Id, $ServiceRequest_Id, $loinc_code, $loinc_name, $request_date, $result_date);
+                        $observation_data = $this->rawatJalan->observation_laboratorium_nominal($registrasi_pasien_terakhir, $id_patient, $encounter, $id_practitioner, $Specimen_Id, $ServiceRequest_Id, $kode_loinc, $nama_loinc, $datetime, $datetime_end);
                         if (isset($observation_data->id)) {
                             $RJ_10_laboratory_update->observation_id = $observation_data->id;
                             $RJ_10_laboratory_update->save();
@@ -1145,11 +1002,11 @@ class RawatJalanController extends Controller
                             $attempts++;
                             if ($attempts >= $max_attempts) {
                                 $RJ_10_laboratory_Log = new RJ_10_laboratory_Log();
-                                $RJ_10_laboratory_Log->noreg = $noreg_terakhir;
+                                $RJ_10_laboratory_Log->rekam_id = $registrasi_pasien_terakhir;
                                 $RJ_10_laboratory_Log->ket_log = json_encode($observation_data);
                                 $RJ_10_laboratory_Log->save();
                                 return response()->json([
-                                    'noreg' => $noreg_terakhir,
+                                    'rekam_id' => $registrasi_pasien_terakhir,
                                     'message' => "observation laboratorium gagal setelah beberapa kali percobaan",
                                     'nama schedule' => 'Laboratorium'
                                 ], 200);
@@ -1159,9 +1016,9 @@ class RawatJalanController extends Controller
                     }
                 }
 
-                $RJ_10_laboratory_update = RJ_10_laboratory::where('encounter', $mapping_kunjungan_poli->encounter)
-                                        ->where('noreg', $noreg_terakhir)
-                                        ->where('kode_pemeriksaan', $hasil_lis->kode)
+                $RJ_10_laboratory_update = RJ_10_laboratory::where('encounter', $encounter)
+                                        ->where('rekam_id', $registrasi_pasien_terakhir)
+                                        ->where('kode_pemeriksaan', $kode_pemeriksaan)
                                         ->first();
 
                 if ($RJ_10_laboratory_update->diagnostic_report_id == null) {
@@ -1169,12 +1026,6 @@ class RawatJalanController extends Controller
                     $max_attempts = 5;
                     $diagnostic_report_data = null;
                     while ($attempts < $max_attempts) {
-                        $Noreg                 = (string) $noreg_terakhir;
-                        $Patient_id             = $data_pasien->entry[0]->resource->id;
-                        // $Encounter_id          = $mapping_kunjungan_poli->encounter;
-                        // $Practitioner_id        = $mapping_dokter_spesialis->satu_sehat_id;
-                        $Practitioner_id        = '10013576199';
-                        $Practitioner_Name      = 'dr.Gusti Reka Kusuma';
                         try {
                             $Observation_id        = $observation_data->id;
                             $Specimen_Id           = $specimen_data->id;
@@ -1184,11 +1035,7 @@ class RawatJalanController extends Controller
                             $Specimen_Id           = $RJ_10_laboratory_update->specimen_id;
                             $ServiceRequest_id     = $RJ_10_laboratory_update->service_request_id;
                         }
-                        $kode_loinc            = $data_lab->LOINC_REQ;
-                        $nama_loinc            = $data_lab->LOINC_REQ;
-                        $request_date          = date('Y-m-d', strtotime($hasil_lis->REG_DATE)).'T'.date('H:i:s', strtotime($hasil_lis->REG_DATE)).'+07:00';
-                        $result_date           = date('Y-m-d', strtotime($hasil_lis->MODIFIED_DATE)).'T'.date('H:i:s', strtotime($hasil_lis->MODIFIED_DATE)).'+07:00';
-                        $diagnostic_report_data = $this->rawatJalan->diagnostic_report_laboratorium_nominal($Noreg, $Patient_id, $Encounter_id, $Practitioner_id, $Observation_id, $Specimen_Id, $ServiceRequest_id, $kode_loinc, $nama_loinc, $request_date, $result_date);
+                        $diagnostic_report_data = $this->rawatJalan->diagnostic_report_laboratorium_nominal($registrasi_pasien_terakhir, $id_patient, $encounter, $id_practitioner, $Observation_id, $Specimen_Id, $ServiceRequest_id, $kode_loinc, $nama_loinc, $datetime, $datetime_end);
                         if (isset($diagnostic_report_data->id)) {
                             $RJ_10_laboratory_update->diagnostic_report_id = $diagnostic_report_data->id;
                             $RJ_10_laboratory_update->save();
@@ -1197,11 +1044,11 @@ class RawatJalanController extends Controller
                             $attempts++;
                             if ($attempts >= $max_attempts) {
                                 $RJ_10_laboratory_Log = new RJ_10_laboratory_Log();
-                                $RJ_10_laboratory_Log->noreg = $noreg_terakhir;
+                                $RJ_10_laboratory_Log->rekam_id = $registrasi_pasien_terakhir;
                                 $RJ_10_laboratory_Log->ket_log = json_encode($diagnostic_report_data);
                                 $RJ_10_laboratory_Log->save();
                                 return response()->json([
-                                    'noreg' => $noreg_terakhir,
+                                    'rekam_id' => $registrasi_pasien_terakhir,
                                     'message' => "diagnostic report laboratorium gagal setelah beberapa kali percobaan",
                                     'nama schedule' => 'Laboratorium'
                                 ], 200);
@@ -1212,7 +1059,7 @@ class RawatJalanController extends Controller
                 }
 
                 return response()->json([
-                    'noreg' => $noreg_terakhir,
+                    'rekam_id' => $registrasi_pasien_terakhir,
                     'message' => 'Semua Data sukses dikirim',
                     'nama schedule' => 'Laboratorium'
                 ], 200);

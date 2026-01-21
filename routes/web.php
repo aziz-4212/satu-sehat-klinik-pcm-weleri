@@ -57,6 +57,12 @@ Route::middleware(['auth'])->group(function () {
         // ===========06. Riwayat Perjalanan Penyakit========
             Route::get('/rawat-jalan/menu/riwayat-perjalanan-penyakit', [App\Http\Controllers\RawatJalanController::class, 'riwayat_perjalanan_penyakit_index'])->name('rawat-jalan.riwayat-perjalanan-penyakit.index');
         // ===========End 06. Riwayat Perjalanan Penyakit====
+        // ===========10. Pemeriksaan Penunjang========
+            Route::get('/rawat-jalan/menu/pemeriksaan-penunjang/menu', [App\Http\Controllers\RawatJalanController::class, 'pemeriksaan_penunjang_menu'])->name('rawat-jalan.pemeriksaan-penunjang.menu');
+            // ========Laboratorium========
+            Route::get('/rawat-jalan/menu/pemeriksaan-penunjang/menu/laboratorium', [App\Http\Controllers\RawatJalanController::class, 'laboratorium_index'])->name('rawat-jalan.pemeriksaan-penunjang.laboratorium.index');
+            // ========End Laboratorium====
+        // ===========End 10. Pemeriksaan Penunjang====
         // ===========12. Diagnosis========
             Route::get('/rawat-jalan/menu/diagnosis/menu', [App\Http\Controllers\RawatJalanController::class, 'diagnosis_menu'])->name('rawat-jalan.diagnosis.menu');
             Route::get('/rawat-jalan/menu/diagnosis/menu/diagnosis-index', [App\Http\Controllers\RawatJalanController::class, 'diagnosis_index'])->name('rawat-jalan.diagnosis.index');
