@@ -49,7 +49,7 @@ Route::prefix('resume-medis-rawat-jalan')->group(function () {
         Route::get('/diagnosis-primary', [App\Http\Controllers\RawatJalanController::class, 'diagnosis_primary_api']);
     // =========================End 12. Diagnosis=======================
     // ===========15. Tata Laksana========
-        Route::get('/peresepan-obat-medication-request', [App\Http\Controllers\RawatJalanController::class, 'peresepan_obat_medication_request_api']);
+        Route::get('/peresepan-obat', [App\Http\Controllers\RawatJalanController::class, 'peresepan_obat_api']);
     // ===========End 15. Tata Laksana========
 
     // Route::get('/riwayat-alergi', [App\Http\Controllers\ResumeMedisRawatJalanController::class, 'riwayat_alergi_index'])->name('resume-medis-rawat-jalan.riwayat-alergi.index');

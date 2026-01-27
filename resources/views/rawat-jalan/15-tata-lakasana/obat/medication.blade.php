@@ -10,7 +10,7 @@
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{{route('rawat-jalan.menu')}}">Rawat Jalan</a></li>
                         <li class="breadcrumb-item"><a href="{{route('rawat-jalan.tata-laksana.menu')}}">Tata Laksana</a></li>
-                        <li class="breadcrumb-item"><a href="{{route('rawat-jalan.tata-laksana.obat.medication.index')}}">Obat</a></li>
+                        <li class="breadcrumb-item"><a href="{{route('rawat-jalan.tata-laksana.obat.menu')}}">Obat</a></li>
                         <li class="breadcrumb-item"><a href="">Mater Obat KFA (Medication)</a></li>
                     </ol>
                 </div>

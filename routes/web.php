@@ -60,7 +60,7 @@ Route::middleware(['auth'])->group(function () {
         // ===========10. Pemeriksaan Penunjang========
             Route::get('/rawat-jalan/menu/pemeriksaan-penunjang/menu', [App\Http\Controllers\RawatJalanController::class, 'pemeriksaan_penunjang_menu'])->name('rawat-jalan.pemeriksaan-penunjang.menu');
             // ========Laboratorium========
-            Route::get('/rawat-jalan/menu/pemeriksaan-penunjang/menu/laboratorium', [App\Http\Controllers\RawatJalanController::class, 'laboratorium_index'])->name('rawat-jalan.pemeriksaan-penunjang.laboratorium.index');
+                Route::get('/rawat-jalan/menu/pemeriksaan-penunjang/menu/laboratorium', [App\Http\Controllers\RawatJalanController::class, 'laboratorium_index'])->name('rawat-jalan.pemeriksaan-penunjang.laboratorium.index');
             // ========End Laboratorium====
         // ===========End 10. Pemeriksaan Penunjang====
         // ===========12. Diagnosis========
@@ -80,6 +80,10 @@ Route::middleware(['auth'])->group(function () {
 
             Route::get('/rawat-jalan/menu/tata-laksana/menu/obat/medication/sync', [App\Http\Controllers\RawatJalanController::class, 'medication_sync'])->name('rawat-jalan.tata-laksana.obat.medication.sync');
             Route::get('/rawat-jalan/menu/tata-laksana/menu/obat/medication/cari-kfa', [App\Http\Controllers\RawatJalanController::class, 'medication_cari_kfa'])->name('rawat-jalan.tata-laksana.obat.medication.cari-kfa');
+
+            Route::get('/rawat-jalan/menu/tata-laksana/menu/obat/menu/peresepan-obat', [App\Http\Controllers\RawatJalanController::class, 'peresepan_obat_index'])->name('rawat-jalan.tata-laksana.obat.peresepan-obat.index');
+            Route::get('/rawat-jalan/menu/tata-laksana/menu/obat/menu/pengkajian-resep', [App\Http\Controllers\RawatJalanController::class, 'pengkajian_resep_index'])->name('rawat-jalan.tata-laksana.obat.pengkajian-resep.index');
+            Route::get('/rawat-jalan/menu/tata-laksana/menu/obat/menu/pengeluaran-obat', [App\Http\Controllers\RawatJalanController::class, 'pengeluaran_obat_index'])->name('rawat-jalan.tata-laksana.obat.pengeluaran-resep.index');
         // ===========End 15. Tata Laksana========
     // ===========modul Rawat Jalan========================
 

@@ -31,7 +31,7 @@
                     </a>
                 </div>
                 <div class="col-lg-3 col-md-6 mb-4 d-flex align-items-stretch">
-                    <a href="#" class="info-box text-white text-decoration-none w-100 text-center"
+                    <a href="{{route('rawat-jalan.tata-laksana.obat.peresepan-obat.index')}}" class="info-box text-white text-decoration-none w-100 text-center"
                        style="background: linear-gradient(135deg, #1B73E8, #52C997);">
                         <span class="info-box-icon"><i class="fas fa-prescription-bottle-alt"></i></span>
                         <div class="info-box-content">
@@ -42,7 +42,7 @@
                     </a>
                 </div>
                 <div class="col-lg-3 col-md-6 mb-4 d-flex align-items-stretch">
-                    <a href="#" class="info-box text-white text-decoration-none w-100 text-center"
+                    <a href="{{route('rawat-jalan.tata-laksana.obat.pengkajian-resep.index')}}" class="info-box text-white text-decoration-none w-100 text-center"
                        style="background: linear-gradient(135deg, #1B73E8, #52C997);">
                         <span class="info-box-icon"><i class="fas fa-question-circle"></i></span>
                         <div class="info-box-content">
@@ -53,7 +53,7 @@
                     </a>
                 </div>
                 <div class="col-lg-3 col-md-6 mb-4 d-flex align-items-stretch">
-                    <a href="#" class="info-box text-white text-decoration-none w-100 text-center"
+                    <a href="{{route('rawat-jalan.tata-laksana.obat.pengeluaran-resep.index')}}" class="info-box text-white text-decoration-none w-100 text-center"
                        style="background: linear-gradient(135deg, #1B73E8, #52C997);">
                         <span class="info-box-icon"><i class="fas fa-capsules"></i></span>
                         <div class="info-box-content">

@@ -12,6 +12,7 @@ use App\Models\Rekam;
 use App\Models\RekamLaborat;
 use App\Models\Pasien;
 use App\Models\Obat;
+use App\Models\PengeluaranObat;
 use App\Models\RJ00UkpKefarmasianLaboratorium;
 use App\Models\RJ_00_Organisation_Location;
 use App\Models\RJ_01_Patient;
@@ -24,6 +25,10 @@ use App\Models\RJ_04_Pemeriksaan_Tanda_Tanda_Vital;
 use App\Models\RJ_04_Pemeriksaan_Tanda_Tanda_Vital_Log;
 use App\Models\RJ_06_Riwayat_Perjalanan_Penyakit;
 use App\Models\RJ_06_Riwayat_Perjalanan_Penyakit_Log;
+use App\Models\RJ_10_laboratory;
+use App\Models\RJ_10_laboratory_Log;
+use App\Models\RJ_10_Radiologi;
+use App\Models\RJ_10_Radiologi_Log;
 use App\Models\RJ_12_Diagnosis;
 use App\Models\RJ_12_Diagnosis_Log;
 use App\Models\RJ_15_Medication_Obat;
@@ -33,10 +38,6 @@ use App\Models\RJ_15_Questionnaire_Response;
 use App\Models\RJ_15_Questionnaire_Response_Log;
 use App\Models\RJ_15_Medication_Dispense;
 use App\Models\RJ_15_Medication_Dispense_Log;
-use App\Models\RJ_10_laboratory;
-use App\Models\RJ_10_laboratory_Log;
-use App\Models\RJ_10_Radiologi;
-use App\Models\RJ_10_Radiologi_Log;
 use App\Models\Configs;
 class RawatJalanController extends Controller
 {
@@ -474,7 +475,7 @@ class RawatJalanController extends Controller
                 }
 
                 $registrasi_pasien_terakhir = $registrasi_pasien_terakhir+1;
-                $registrasi_pasien_terakhir = 14;
+                // $registrasi_pasien_terakhir = 19;
                 $registrasi_pasien = Rekam::where('id', $registrasi_pasien_terakhir)->first();
                 if ($registrasi_pasien == null) {
                     $log_encounter = new RJ_02_A_Kunjungan_Baru_Log();
@@ -571,7 +572,7 @@ class RawatJalanController extends Controller
 
                     // ===========================Masuk ke Ruang Pemeriksaan===========================
                         $encounter      = $encounter->id;
-                        $encounter      = "cadd70d7-ad0d-4b19-adc6-f183d785d737";
+                        // $encounter      = "4efb68c7-be49-4e58-a5bc-ffad84fc4f1b";
                         $datetime       = $date;
                         $datetime_end   = date('Y-m-d', strtotime($tanggal)).'T'.date('H:i:s', strtotime($jam . ' +15 minutes')).'.000+07:00';
                         $id_location    = "2b21293b-3cab-4c46-b7a0-9289e2526f2c";
@@ -628,7 +629,6 @@ class RawatJalanController extends Controller
                         $this->riwayat_perjalanan_penyakit_ip($id_patient, $name_patient, $id_practitioner, $encounter, $date, $data_riwayat);
                     // ===========06. Riwayat Perjalanan Penyakit========
 
-
                     // =========================10. Pemeriksaan Penunjang=======================
                         // =========================Laboratorium=======================
                             $rekam_laborat = RekamLaborat::where('rekam_id', $registrasi_pasien_terakhir)->get();
@@ -648,6 +648,33 @@ class RawatJalanController extends Controller
                             }
                         // =========================End Laboratorium===================
                     // =========================End 10. Pemeriksaan Penunjang===================
+
+                    // =========================15. Tata laksana===================
+                        $pengeluaran_obat = PengeluaranObat::where('rekam_id', $registrasi_pasien_terakhir)->get();
+                        if ($pengeluaran_obat->count() != 0) {
+                            foreach ($pengeluaran_obat as $item) {
+                                $RJ_15_Medication_Obat = RJ_15_Medication_Obat::where('kode_barang_mabar', $item->obat->kd_obat)->first();
+                                if (!$RJ_15_Medication_Obat) {
+                                    continue;
+                                }
+                                $id_obat_satusehat = $RJ_15_Medication_Obat->kode_satu_sehat;
+                                $display_obat_satusehat = $RJ_15_Medication_Obat->keterangan_kfa;
+                                $dosis_obat = $item->keterangan;
+                                $start_waktu_pemberian_obat = $date;
+                                $end_waktu_pemberian_obat = date('Y-m-d', strtotime($tanggal . ' +3 days')).'T'.$jam.'.000+07:00';
+                                $jumlah_obat = $item->jumlah;
+                                $durasi_penggunaan = '3';
+                                if (!$item->obat || !$item->obat->kd_obat) {
+                                    continue;
+                                }
+                                $kode_obat = $item->obat->kd_obat;
+                                $kode_obat_kfa = $item->obat->kode_kfa;
+                                $deskripsi_obat_kfa = $item->obat->keterangan_kfa;
+                                $nomer_resep = $item->id;
+                                $this->peresepan_obat_api($registrasi_pasien_terakhir, $id_obat_satusehat, $display_obat_satusehat, $id_patient, $name_patient, $encounter, $date, $id_practitioner, $name_practitioner, $dosis_obat, $start_waktu_pemberian_obat, $end_waktu_pemberian_obat, $jumlah_obat, $durasi_penggunaan, $kode_obat, $kode_obat_kfa, $deskripsi_obat_kfa, $nomer_resep);
+                            }
+                        }
+                    // =========================End 15. Tata laksana===============
                 }else {
                     $log_encounter = new RJ_02_A_Kunjungan_Baru_Log();
                     $log_encounter->rekam_id = $registrasi_pasien_terakhir;
@@ -1626,241 +1653,98 @@ class RawatJalanController extends Controller
             return view('rawat-jalan.15-tata-lakasana.obat.cari-kfa', compact('searchResult', 'search', 'page', 'size'));
         }
 
-        public function peresepan_obat_medication_request_api(Request $request){
+        public function peresepan_obat_index(Request $request){
+            if ($request->status == "error") {
+                $data = RJ_15_Medication_Request_Log::orderBy('id', 'desc')->paginate(25);
+            }else {
+                $data = RJ_15_Medication_Request::orderBy('id', 'desc')->paginate(25);
+            }
+            return view('rawat-jalan.15-tata-lakasana.obat.peresepan-obat', compact('data'));
+        }
+
+        public function pengkajian_resep_index(Request $request){
+            if ($request->status == "error") {
+                $data = RJ_15_Questionnaire_Response_Log::orderBy('id', 'desc')->paginate(25);
+            }else {
+                $data = RJ_15_Questionnaire_Response::orderBy('id', 'desc')->paginate(25);
+            }
+            return view('rawat-jalan.15-tata-lakasana.obat.pengkajian-resep', compact('data'));
+        }
+
+        public function pengeluaran_obat_index(Request $request){
+            if ($request->status == "error") {
+                $data = RJ_15_Medication_Dispense_Log::orderBy('id', 'desc')->paginate(25);
+            }else {
+                $data = RJ_15_Medication_Dispense::orderBy('id', 'desc')->paginate(25);
+            }
+            return view('rawat-jalan.15-tata-lakasana.obat.pengeluaran-obat', compact('data'));
+        }
+
+        public function peresepan_obat_api($registrasi_pasien_terakhir, $id_obat_satusehat, $display_obat_satusehat, $id_patient, $name_patient, $encounter, $date, $id_practitioner, $name_practitioner, $dosis_obat, $start_waktu_pemberian_obat, $end_waktu_pemberian_obat, $jumlah_obat, $durasi_penggunaan, $kode_obat, $kode_obat_kfa, $deskripsi_obat_kfa, $nomer_resep)
+        {
+            // dd($registrasi_pasien_terakhir, $id_obat_satusehat, $display_obat_satusehat, $id_patient, $name_patient, $encounter, $date, $id_practitioner, $name_practitioner, $dosis_obat, $start_waktu_pemberian_obat, $end_waktu_pemberian_obat, $jumlah_obat, $durasi_penggunaan, $kode_obat, $kode_obat_kfa, $deskripsi_obat_kfa, $nomer_resep);
             set_time_limit((int) 0);
-            $medication_request = RJ_15_Medication_Request::orderBy('noreg', 'desc')->pluck('noreg')->first();
-            $log_medication_request = RJ_15_Medication_Request_log::orderBy('noreg', 'desc')->pluck('noreg')->first();
-            if ($medication_request > $log_medication_request) {
-                $noreg_terakhir = $medication_request;
-            }elseif ($medication_request < $log_medication_request) {
-                $noreg_terakhir = $log_medication_request;
-            }elseif ($medication_request == $log_medication_request) {
-                $noreg_terakhir = $medication_request;
-            }
-
-            $noreg_terakhir = $noreg_terakhir+1;
-            $noreg_tanggal_depan = (substr($noreg_terakhir, 0, -4)+1)."0000";
-            $data_tanggal_terakhir = RJ_02_A_Kunjungan_Baru::where('noreg', "<",$noreg_tanggal_depan)->orderBy('noreg', 'desc')->pluck('noreg')->first();
-            if ($noreg_terakhir > $data_tanggal_terakhir) {
-                $noreg_terakhir = $noreg_tanggal_depan+1;
-            }
-
-            //berhentikan sebelum noreg hari sekarang
-            $now = Carbon::now()->setTimezone('Asia/Jakarta')->format('ymd');
-            $noreg_batas = (Integer)($now . '0000');
-            if ($noreg_terakhir > $noreg_batas) {
-                return response()->json([
-                    'noreg' => $noreg_terakhir,
-                    'message' => "Noreg Dalam Pelayanan",
-                    'nama schedule' => 'Medication Request'
-                ], 200);
-            }
-
-            if (substr($noreg_terakhir, 2, 4) == '1232') {
-                $noreg_terakhir += 100000000;
-                $noreg_terakhir = substr_replace($noreg_terakhir, '0101', 2, 4);
-            }
-
-            $data_terbesar = RJ_02_A_Kunjungan_Baru::orderBy('noreg', 'desc')->pluck('noreg')->first();
-            if ($noreg_terakhir > $data_terbesar) {
-                return response()->json([
-                    'noreg' => $noreg_terakhir,
-                    'message' => "Noreg Belum Terdaftar",
-                    'nama schedule' => 'Medication Request'
-                ], 200);
-            }
-
-            // $noreg_terakhir = '2506300003';
-            // dd("halo");
-            $mapping_kunjungan_poli = RJ_02_A_Kunjungan_Baru::where('noreg', $noreg_terakhir)->first();
-            if ($mapping_kunjungan_poli == null) {
-                $this->pembuatan_kunjungan_baru_api($request, $noreg_terakhir);
-                $mapping_kunjungan_poli = RJ_02_A_Kunjungan_Baru::where('noreg', $noreg_terakhir)->first();
-                // $log_medication_request = new RJ_15_Medication_Request_Log();
-                // $log_medication_request->noreg = $noreg_terakhir;
-                // $log_medication_request->ket_log = 'Mapping kunjungan poli tidak ditemukan';
-                // $log_medication_request->save();
-                // return response()->json([
-                //     'noreg' => $noreg_terakhir,
-                //     'message' => "Mapping kunjungan poli tidak ditemukan",
-                //     'nama schedule' => 'Medication Request'
-                // ], 200);
-            }
-
-            $registrasi_pasien = RegistrasiPasien::where('NOREG', $noreg_terakhir)->first();
-            if ($registrasi_pasien == null) {
-                $log_medication_request = new RJ_15_Medication_Request_Log();
-                $log_medication_request->noreg = $noreg_terakhir;
-                $log_medication_request->ket_log = 'Noreg Belum Terdaftar';
-                $log_medication_request->save();
-                return response()->json([
-                    'noreg' => $noreg_terakhir,
-                    'message' => "Noreg Belum Terdaftar",
-                    'nama schedule' => 'Medication Request'
-                ], 200);
-            }
-
-            $mapping_dokter_spesialis = RJ_01_Practitioner::where('kode_dokter', $registrasi_pasien->Registrasi_Dokter->KODEDOKTER)->first();
-            if ($mapping_dokter_spesialis == null) {
-                $log_medication_request = new RJ_15_Medication_Request_Log();
-                $log_medication_request->noreg = $noreg_terakhir;
-                $log_medication_request->ket_log = "Dokter untuk Pasien ".$registrasi_pasien->Pasien->NAMAPASIEN." Tidak Ditemukan Di Mapping Dokter Spesialis";
-                $log_medication_request->save();
-                return response()->json([
-                    'noreg' => $noreg_terakhir,
-                    'message' => "Dokter untuk Pasien ".$registrasi_pasien->Pasien->NAMAPASIEN." Tidak Ditemukan Di Mapping Dokter Spesialis",
-                    'nama schedule' => 'Medication Request'
-                ], 200);
-            }
-
-            $trpmn = Trpmn::where('noreg', (String)$noreg_terakhir)->select('NORESEP', 'TGLRESEP')->first();
-            if ($trpmn == null) {
-                $log_medication_request = new RJ_15_Medication_Request_Log();
-                $log_medication_request->noreg = $noreg_terakhir;
-                $log_medication_request->ket_log = 'Pasien Tidak Memiliki Resep';
-                $log_medication_request->save();
-                return response()->json([
-                    'noreg' => $noreg_terakhir,
-                    'message' => "Pasien Tidak Memiliki Resep",
-                    'nama schedule' => 'Medication Request'
-                ], 200);
-            }
-            // dd($trpmn);
-
-            $trpdn = Trpdn::where('NORESEP', $trpmn->NORESEP)->get();
-            if ($trpdn == null || $trpdn->isEmpty()) {
-                $log_medication_request = new RJ_15_Medication_Request_Log();
-                $log_medication_request->noreg = $noreg_terakhir;
-                $log_medication_request->ket_log = 'Pasien Tidak Memiliki Resep';
-                $log_medication_request->save();
-                return response()->json([
-                    'noreg' => $noreg_terakhir,
-                    'message' => "Pasien Tidak Memiliki Resep",
-                    'nama schedule' => 'Medication Request'
-                ], 200);
-            }
-
-            foreach ($trpdn as $item) {
-                $mabar = Mabar::where('KODEBARANG', $item->KODEBARANG)->first();
-                $master_kfa_obat = RJ_15_Medication_Obat::where('kode_barang_mabar', $item->KODEBARANG)->first();
-                if ($master_kfa_obat == null) {
-                    $log_medication_request = new RJ_15_Medication_Request_Log();
-                    $log_medication_request->noreg = $noreg_terakhir;
-                    $log_medication_request->ket_log = 'Obat dengan Kode ini '.$item->KODEBARANG.' Tidak Ditemukan Di Master KFA Obat';
-                    $log_medication_request->save();
-                    continue;
-                }
-                $data_pasien = $this->patient->search_nik($registrasi_pasien->Pasien->NOKTP);
-                if (!(is_object($data_pasien) && property_exists($data_pasien, 'total') && $data_pasien->total != 0)) {
-                    $RJ_15_Medication_Request_Log = new RJ_15_Medication_Request_Log();
-                    $RJ_15_Medication_Request_Log->noreg = $noreg_terakhir;
-                    $RJ_15_Medication_Request_Log->ket_log = 'NIK '.$registrasi_pasien->Pasien->NAMAPASIEN.' Tidak Ditemukan';
-                    $RJ_15_Medication_Request_Log->save();
-                    return response()->json([
-                        'noreg' => $noreg_terakhir,
-                        'message' => 'NIK '.$registrasi_pasien->Pasien->NAMAPASIEN.' Tidak Ditemukan',
-                        'nama schedule' => 'pendaftaran pendataan pasien'
-                    ], 200);
-                }
-                $id_obat_satusehat = $master_kfa_obat->kode_satu_sehat;
-                $display_obat_satusehat = $master_kfa_obat->keterangan_kfa;
-                $id_patient = $data_pasien->entry[0]->resource->id;
-                $id_patient_display = $data_pasien->entry[0]->resource->name[0]->text;
-                $encounter = $mapping_kunjungan_poli->encounter;
-                $tanggal_peresepan = date('Y-m-d', strtotime($trpmn->TGLRESEP)).'T00:00:00.000+07:00';
-                $id_dokter_satu_sehat = $mapping_dokter_spesialis->satu_sehat_id;
-                $display_dokter_satu_sehat = $mapping_dokter_spesialis->nama;
-                $dosis_obat = $item->KETERANGANATRPKAI.' '.$item->KETERANGAN;
-                $start_waktu_pemberian_obat = date('Y-m-d', strtotime($trpmn->TGLRESEP)).'T00:00:00.000+07:00';
-                $end_waktu_pemberian_obat = date('Y-m-d', strtotime($trpmn->TGLRESEP . ' +7 days')).'T00:00:00.000+07:00';
-                $jumlah_obat = intval($item->QTYBAR);
-                $durasi_penggunaan = '7';
-                // dd($noreg_terakhir, $id_obat_satusehat, $display_obat_satusehat, $id_patient, $id_patient_display, $encounter, $tanggal_peresepan, $id_dokter_satu_sehat, $display_dokter_satu_sehat, $dosis_obat, $start_waktu_pemberian_obat, $end_waktu_pemberian_obat, $jumlah_obat, $durasi_penggunaan);
-                    $medication_request = $this->rawatJalan->create_medication_request($id_obat_satusehat, $display_obat_satusehat, $id_patient, $id_patient_display, $encounter, $tanggal_peresepan, $id_dokter_satu_sehat, $display_dokter_satu_sehat, $dosis_obat, $start_waktu_pemberian_obat, $end_waktu_pemberian_obat, $jumlah_obat, $durasi_penggunaan);
-                    if (isset($medication_request->id)) {
-                        $medication_request_model = new RJ_15_Medication_Request();
-                        $medication_request_model->encounter = $encounter;
-                        $medication_request_model->noreg = $noreg_terakhir;
-                        $medication_request_model->id_medication_request = $medication_request->id;
-                        $medication_request_model->save();
-                        // ======================pengkajian resep=======================
-                            if ($item->USLOGNM != null) {
-                                $RJ_01_Practitioner = RJ_01_Practitioner::where('NIK_pegawai', $item->USLOGNM)->first();
-                                $id_apoteker = $RJ_01_Practitioner->satu_sehat_id;
-                                $display_apoteker = $RJ_01_Practitioner->nama;
-                            }else {
-                                $id_apoteker = '12881512636';
-                                $display_apoteker = "ZAHRINA KHUSNAYA";
-                            }
-                            $kode_quesnionnaire = $noreg_terakhir.str_replace(' ', '', $item->KODEBARANG);
-                            $questionnaire_response = $this->rawatJalan->create_questionnaire_response($kode_quesnionnaire, $id_patient, $id_patient_display, $encounter, $tanggal_peresepan, $id_apoteker, $display_apoteker);
-                            if (isset($questionnaire_response->id)) {
-                                $RJ_15_Questionnaire_Response = new RJ_15_Questionnaire_Response();
-                                $RJ_15_Questionnaire_Response->encounter = $encounter;
-                                $RJ_15_Questionnaire_Response->noreg = $noreg_terakhir;
-                                $RJ_15_Questionnaire_Response->id_questionnaire_response = $questionnaire_response->id;
-                                $RJ_15_Questionnaire_Response->save();
-                            }else {
-                                $RJ_15_Questionnaire_Response_Log = new RJ_15_Questionnaire_Response_Log();
-                                $RJ_15_Questionnaire_Response_Log->noreg = $noreg_terakhir;
-                                $RJ_15_Questionnaire_Response_Log->ket_log = json_encode($questionnaire_response);
-                                $RJ_15_Questionnaire_Response_Log->save();
-                            }
-                        // ======================end pengkajian resep=======================
-
-                        // ======================pengeluaran obat=======================
-                            $kode_barang_obat = $master_kfa_obat->kode_barang_mabar;
-                            $kode_oabat_kfa = $master_kfa_obat->kode_kfa;
-                            $deskripsi_obat_kfa = $master_kfa_obat->keterangan_kfa;
-
-                            $medication_dispense_obat = $this->rawatJalan->create_medication_dispense_obat($kode_barang_obat, $kode_oabat_kfa, $deskripsi_obat_kfa);
-                            if (isset($medication_dispense_obat->id)) {
-                                $medication_dispense_model = new RJ_15_Medication_Dispense();
-                                $medication_dispense_model->encounter = $encounter;
-                                $medication_dispense_model->noreg = $noreg_terakhir;
-                                $medication_dispense_model->id_medication = $medication_dispense_obat->id;
-                                $medication_dispense_model->save();
-
-                                $medication_dispense_model = RJ_15_Medication_Dispense::where('noreg', $noreg_terakhir)->where('id_medication', $medication_dispense_obat->id)->first();
-                                // $medication_dispense_model = RJ_15_Medication_Dispense::where('noreg', $noreg_terakhir)->where('id_medication', 'dce53a47-bb37-4558-b525-fbb2f494f885')->first();
-
-                                $nomer_resep = $item->NORESEP;
-                                $medication_id = $medication_dispense_obat->id;
-                                // $medication_id = 'dce53a47-bb37-4558-b525-fbb2f494f885';
-                                $display_obat_satusehat = $master_kfa_obat->keterangan_kfa;
-                                $id_patient = $data_pasien->entry[0]->resource->id;
-                                $id_patient_display = $data_pasien->entry[0]->resource->name[0]->text;
-                                $encounter = $mapping_kunjungan_poli->encounter;
-                                $id_dockter_satu_sehat = $mapping_dokter_spesialis->satu_sehat_id;
-                                $display_dockter_satu_sehat = $mapping_dokter_spesialis->nama;
-                                $medication_request_id = $medication_request->id;
-                                // $medication_request_id = 'ed7d1796-652c-4390-9a6c-bccdde76e7df';
-                                $start_waktu_pemberian_obat = date('Y-m-d', strtotime($item->TANGGAL)).'T'.date('H:i:s', strtotime($item->TANGGAL)).'+07:00';
-                                $end_waktu_pemberian_obat = \Carbon\Carbon::parse($item->TANGGAL)->addMinutes(15)->format('Y-m-d\TH:i:s').'+07:00';
-
-                                $medication_dispense = $this->rawatJalan->create_medication_dispense($nomer_resep, $medication_id, $display_obat_satusehat, $id_patient, $id_patient_display, $encounter, $id_dockter_satu_sehat, $display_dockter_satu_sehat, $medication_request_id, $start_waktu_pemberian_obat, $end_waktu_pemberian_obat);
-                                if (isset($medication_dispense->id)) {
-                                    $medication_dispense_model->id_medication_dispense = $medication_dispense->id;
-                                    $medication_dispense_model->save();
-                                } else {
-                                    $medication_dispense_model_log = new RJ_15_Medication_Dispense_Log();
-                                    $medication_dispense_model_log->noreg = $noreg_terakhir;
-                                    $medication_dispense_model_log->ket_log = json_encode($medication_dispense);
-                                    $medication_dispense_model_log->save();
-                                }
-                            }else {
-                                $log_medication_dispense = new RJ_15_Medication_Dispense_Log();
-                                $log_medication_dispense->noreg = $noreg_terakhir;
-                                $log_medication_dispense->ket_log = json_encode($medication_dispense_obat);
-                                $log_medication_dispense->save();
-                            }
-                        // ======================end pengeluaran obat=======================
+            $medication_request = $this->rawatJalan->create_medication_request($id_obat_satusehat, $display_obat_satusehat, $id_patient, $name_patient, $encounter, $date, $id_practitioner, $name_practitioner, $dosis_obat, $start_waktu_pemberian_obat, $end_waktu_pemberian_obat, $jumlah_obat, $durasi_penggunaan);
+            if (isset($medication_request->id)) {
+                $medication_request_model = new RJ_15_Medication_Request();
+                $medication_request_model->encounter = $encounter;
+                $medication_request_model->rekam_id = $registrasi_pasien_terakhir;
+                $medication_request_model->id_medication_request = $medication_request->id;
+                $medication_request_model->save();
+                // ======================pengkajian resep=======================
+                    $questionnaire_response = $this->rawatJalan->create_questionnaire_response($kode_obat, $id_patient, $name_patient, $encounter, $date, $id_practitioner, $name_practitioner);
+                    if (isset($questionnaire_response->id)) {
+                        $RJ_15_Questionnaire_Response = new RJ_15_Questionnaire_Response();
+                        $RJ_15_Questionnaire_Response->encounter = $encounter;
+                        $RJ_15_Questionnaire_Response->rekam_id = $registrasi_pasien_terakhir;
+                        $RJ_15_Questionnaire_Response->id_questionnaire_response = $questionnaire_response->id;
+                        $RJ_15_Questionnaire_Response->save();
+                    }else {
+                        $RJ_15_Questionnaire_Response_Log = new RJ_15_Questionnaire_Response_Log();
+                        $RJ_15_Questionnaire_Response_Log->rekam_id = $registrasi_pasien_terakhir;
+                        $RJ_15_Questionnaire_Response_Log->ket_log = json_encode($questionnaire_response);
+                        $RJ_15_Questionnaire_Response_Log->save();
                     }
-                sleep(10);
+                // ======================end pengkajian resep=======================
+
+                // ======================pengeluaran obat=======================
+                    $medication_dispense_obat = $this->rawatJalan->create_medication_dispense_obat($kode_obat, $kode_obat_kfa, $deskripsi_obat_kfa);
+                    if (isset($medication_dispense_obat->id)) {
+                        $medication_dispense_model = new RJ_15_Medication_Dispense();
+                        $medication_dispense_model->encounter = $encounter;
+                        $medication_dispense_model->rekam_id = $registrasi_pasien_terakhir;
+                        $medication_dispense_model->id_medication = $medication_dispense_obat->id;
+                        $medication_dispense_model->save();
+
+                        $medication_dispense_model = RJ_15_Medication_Dispense::where('rekam_id', $registrasi_pasien_terakhir)->where('id_medication', $medication_dispense_obat->id)->first();
+                        // $medication_dispense_model = RJ_15_Medication_Dispense::where('noreg', $noreg_terakhir)->where('id_medication', 'dce53a47-bb37-4558-b525-fbb2f494f885')->first();
+
+                        $medication_id = $medication_dispense_obat->id;
+                        $medication_id = '109e9faa-d8f6-4768-9cdc-ba7069324dec';
+                        $medication_request_id = $medication_request->id;
+                        // $medication_request_id = '661e88a4-c193-48b7-909e-e73598109ee2';
+
+                        $medication_dispense = $this->rawatJalan->create_medication_dispense($nomer_resep, $medication_id, $deskripsi_obat_kfa, $id_patient, $name_patient, $encounter, $id_practitioner, $name_practitioner, $medication_request_id, $start_waktu_pemberian_obat, $end_waktu_pemberian_obat);
+                        if (isset($medication_dispense->id)) {
+                            $medication_dispense_model->id_medication_dispense = $medication_dispense->id;
+                            $medication_dispense_model->save();
+                        } else {
+                            $medication_dispense_model_log = new RJ_15_Medication_Dispense_Log();
+                            $medication_dispense_model_log->rekam_id = $registrasi_pasien_terakhir;
+                            $medication_dispense_model_log->ket_log = json_encode($medication_dispense);
+                            $medication_dispense_model_log->save();
+                        }
+                    }else {
+                        $log_medication_dispense = new RJ_15_Medication_Dispense_Log();
+                        $log_medication_dispense->rekam_id = $registrasi_pasien_terakhir;
+                        $log_medication_dispense->ket_log = json_encode($medication_dispense_obat);
+                        $log_medication_dispense->save();
+                    }
+                // ======================end pengeluaran obat=======================
             }
 
             return response()->json([
-                'noreg' => $noreg_terakhir,
+                'noreg' => $registrasi_pasien_terakhir,
                 'message' => 'Semua Data sukses dikirim',
                 'nama schedule' => 'Tata Laksana Obat'
             ], 200);
