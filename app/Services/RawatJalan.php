@@ -1853,7 +1853,7 @@ class RawatJalan
     // =========================10. Pemeriksaan Penunjang=======================
 
     // ==================================12. Diagnosis==================================
-        public function diagnosis_primer($kode_diagnosa, $deskripsi_diagnosa, $mapping_pasien_kodesatusehat, $mapping_pasien_namasatusehat, $mapping_kunjungan_poli_encounter)
+        public function diagnosis_primer($kode_diagnosa, $deskripsi_diagnosa, $id_patient, $name_patient, $encounter_id)
         {
             $curl = curl_init();
 
@@ -1898,11 +1898,11 @@ class RawatJalan
                         ]
                     },
                     "subject": {
-                        "reference": "Patient/'.$mapping_pasien_kodesatusehat.'",
-                        "display": "'.$mapping_pasien_namasatusehat.'"
+                        "reference": "Patient/'.$id_patient.'",
+                        "display": "'.$name_patient.'"
                     },
                     "encounter": {
-                        "reference": "Encounter/'.$mapping_kunjungan_poli_encounter.'",
+                        "reference": "Encounter/'.$encounter_id.'",
                         "display": "Kunjungan Rawat Jalan"
                     }
                 }',

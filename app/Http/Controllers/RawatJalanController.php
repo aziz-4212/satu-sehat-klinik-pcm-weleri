@@ -10,6 +10,7 @@ use App\Services\Patient;
 use App\Services\RawatJalan;
 use App\Models\Rekam;
 use App\Models\RekamLaborat;
+use App\Models\RekamDiagnosa;
 use App\Models\Pasien;
 use App\Models\Obat;
 use App\Models\PengeluaranObat;
@@ -359,108 +360,6 @@ class RawatJalanController extends Controller
             return view('rawat-jalan.02-pendaftaran-kunjungan-rawat-jalan.pembuatan-kunjungan-baru.index', compact('data'));
         }
 
-        // $id_patient = "P01536204075";
-        // $name_patient = "sunarsih";
-        // $id_practitioner = "10016656663";
-        // $name_practitioner = "TUTIK NUR FAIZAH";
-        // $date = "2025-09-09";
-        // // $encounter = $this->rawatJalan->kunjungan_baru($id_patient, $name_patient, $id_practitioner, $name_practitioner, $date);
-        // // dd($encounter);
-
-        // $encounter_id = "1da6ffde-e80b-46bc-8e54-05554675b1c5";
-        // $id_patient = "P01536204075";
-        // $name_patient = "sunarsih";
-        // $id_practitioner = "10016656663";
-        // $name_practitioner = "TUTIK NUR FAIZAH";
-        // $datetime               = '2025-09-09T12:15:44.000+07:00';
-        // $datetime_end           = '2025-09-09T12:30:56.000+07:00';
-        // $id_location = "3a4ff0ba-3edd-42ce-99f8-25c20383a3f2";
-        // $name_location = "klinik dokter umum";
-        // // $data = $this->rawatJalan->masuk_ruang($encounter_id, $id_patient, $name_patient, $id_practitioner, $name_practitioner, $datetime, $datetime_end, $id_location, $name_location);
-        // // dd($data);
-
-        // $kode_diagnosa = "j06.9";
-        // $deskripsi_diagnosa = "Penyakit ISPA akut tidak spesifik";
-        // $mapping_pasien_kodesatusehat = "P01536204075";
-        // $mapping_pasien_namasatusehat = "sunarsih";
-        // $mapping_kunjungan_poli_encounter = "1da6ffde-e80b-46bc-8e54-05554675b1c5";
-        // // $data = $this->rawatJalan->diagnosis_primer($kode_diagnosa, $deskripsi_diagnosa, $mapping_pasien_kodesatusehat, $mapping_pasien_namasatusehat, $mapping_kunjungan_poli_encounter);
-        // // dd($data);
-
-        // $id_obat_satusehat = "88eb8501-c785-42b2-b252-7e9517f5600b";
-        // $display_obat_satusehat = "Paracetamol 500 mg Tablet (PAMOL)";
-        // $id_patient = "P01536204075";
-        // $id_patient_display = "sunarsih";
-        // $encounter = "1da6ffde-e80b-46bc-8e54-05554675b1c5";
-        // $tanggal_peresepan = '2025-09-09T12:30:56.000+07:00';
-        // $id_dokter_satu_sehat = "10016656663";
-        // $display_dokter_satu_sehat = "TUTIK NUR FAIZAH";
-        // $dosis_obat = "3x1 Tablet";
-        // $start_waktu_pemberian_obat = '2025-09-09T12:30:56.000+07:00';
-        // $end_waktu_pemberian_obat = '2025-09-12T12:30:56.000+07:00';
-        // $jumlah_obat = 9;
-        // $durasi_penggunaan = "3";
-        // // $medication_request = $this->rawatJalan->create_medication_request($id_obat_satusehat, $display_obat_satusehat, $id_patient, $id_patient_display, $encounter, $tanggal_peresepan, $id_dokter_satu_sehat, $display_dokter_satu_sehat, $dosis_obat, $start_waktu_pemberian_obat, $end_waktu_pemberian_obat, $jumlah_obat, $durasi_penggunaan);
-        // // dd($medication_request);
-        // $kode_quesnionnaire = "2025090911";
-        // $id_apoteker = "10016656663";
-        // $display_apoteker = "TUTIK NUR FAIZAH";
-        // // $questionnaire_response = $this->rawatJalan->create_questionnaire_response($kode_quesnionnaire, $id_patient, $id_patient_display, $encounter, $tanggal_peresepan, $id_apoteker, $display_apoteker);
-        // // dd($questionnaire_response);
-        // $kode_barang_obat = "Para";
-        // $kode_oabat_kfa = "93002313";
-        // $deskripsi_obat_kfa = "Paracetamol 500 mg Tablet (PAMOL)";
-        // // $medication_dispense_obat = $this->rawatJalan->create_medication_dispense_obat($kode_barang_obat, $kode_oabat_kfa, $deskripsi_obat_kfa);
-        // // dd($medication_dispense_obat);
-        // $nomer_resep = "REG#2025090911";
-        // $medication_id = "e6cb6f65-0a69-4f37-ac6a-9db817333db2";
-        // $id_dockter_satu_sehat = "10016656663";
-        // $display_dockter_satu_sehat = "TUTIK NUR FAIZAH";
-        // $medication_request_id = "ae25919a-0e6a-4e58-b7cc-476a5283ded4";
-        // $start_waktu_pemberian_obat = '2025-09-09T12:30:56.000+07:00';
-        // $end_waktu_pemberian_obat = '2025-09-09T12:30:56.000+07:00';
-        // // $medication_dispense = $this->rawatJalan->create_medication_dispense($nomer_resep, $medication_id, $display_obat_satusehat, $id_patient, $id_patient_display, $encounter, $id_dockter_satu_sehat, $display_dockter_satu_sehat, $medication_request_id, $start_waktu_pemberian_obat, $end_waktu_pemberian_obat);
-        // // dd($medication_dispense);
-
-        // $Patient_id = "P01536204075";
-        // $Patient_Name = "sunarsih";
-        // $Encounter_id ="1da6ffde-e80b-46bc-8e54-05554675b1c5";
-        // $Practitioner_id = "10016656663";
-        // $Practitioner_Name = "TUTIK NUR FAIZAH";
-        // $start_date = '2025-09-09T12:30:56.000+07:00';
-        // $end_date = '2025-09-09T12:30:56.000+07:00';
-        // // $procedure_data = $this->rawatJalan->procedure_status_puasa_laboratorium_nominal($Patient_id, $Patient_Name, $Encounter_id, $Practitioner_id, $Practitioner_Name, $start_date, $end_date);
-        // // dd($procedure_data);
-        // $Noreg = "REG#2025090911";
-        // $kode_loinc = "41653-7";
-        // $nama_loinc = "41653-7";
-        // $deskripsi_loinc = "41653-7";
-        // $Procedure_Id = "33a69faf-eb47-4abc-b2d4-44cd0c10d59f";
-        // // $service_request_data = $this->rawatJalan->service_request_laboratorium_nominal($Noreg, $Patient_id, $Patient_Name, $Encounter_id, $Practitioner_id, $Practitioner_Name, $start_date, $end_date, $kode_loinc, $nama_loinc, $deskripsi_loinc, $Procedure_Id);
-        // // dd($service_request_data);
-        // $date = '2025-09-09T12:30:56.000+07:00';
-        // $kode_snomed = "119364003";
-        // $nama_snomed = "Serum specimen";
-        // $value = "367";
-        // $satuan = "mg/dl";
-        // $service_request_id = "8d566bd9-14d5-426c-a2a3-8005c13aa649";
-        // // $specimen_data = $this->rawatJalan->specimen_laboratorium_nominal($Noreg, $Patient_id, $Patient_Name, $Practitioner_id, $Practitioner_Name, $date, $kode_snomed, $nama_snomed, $value, $satuan, $service_request_id);
-        // // dd($specimen_data);
-        // $Specimen_Id = "4d87f3d6-5155-42ef-8e68-d0721725d908";
-        // $ServiceRequest_Id = "8d566bd9-14d5-426c-a2a3-8005c13aa649";
-        // $loinc_code = "41653-7";
-        // $loinc_name = "41653-7";
-        // $request_date = '2025-09-09T12:30:56.000+07:00';
-        // $result_date = '2025-09-09T12:30:56.000+07:00';
-        // // $observation_data = $this->rawatJalan->observation_laboratorium_nominal($Noreg, $Patient_id, $Encounter_id, $Practitioner_id, $Specimen_Id, $ServiceRequest_Id, $loinc_code, $loinc_name, $request_date, $result_date);
-        // // dd($observation_data);
-        // // dd("halo");
-        // $Observation_id = "f08e3c1f-387d-476e-b7f3-1e61401d2eb2";
-        // $Specimen_Id = "4d87f3d6-5155-42ef-8e68-d0721725d908";
-        // $ServiceRequest_id = "8d566bd9-14d5-426c-a2a3-8005c13aa649";
-        // $diagnostic_report_data = $this->rawatJalan->diagnostic_report_laboratorium_nominal($Noreg, $Patient_id, $Encounter_id, $Practitioner_id, $Observation_id, $Specimen_Id, $ServiceRequest_id, $kode_loinc, $nama_loinc, $request_date, $result_date);
-        // // dd($diagnostic_report_data);
-
         public function pembuatan_kunjungan_baru_api(Request $request, $noreg_terakhir = null){
             set_time_limit((int) 0);
             if ($noreg_terakhir == null) {
@@ -493,7 +392,7 @@ class RawatJalanController extends Controller
                 if ($registrasi_pasien->tgl_rekam == $tanggal_sekarang) {
                     return response()->json([
                         'noreg' => $registrasi_pasien_terakhir,
-                        'message' => "Noreg Belum Terdaftar",
+                        'message' => "Noreg Dalam pelayanan",
                         'nama schedule' => 'pendaftaran pendataan pasien'
                     ], 200);
                 }
@@ -625,11 +524,11 @@ class RawatJalanController extends Controller
                     // ===========04. Hasil Pemeriksaan Fisik========
 
                     // ===========06. Riwayat Perjalanan Penyakit========
-                        $data_riwayat = $registrasi_pasien->keluhan;
-                        $this->riwayat_perjalanan_penyakit_ip($id_patient, $name_patient, $id_practitioner, $encounter, $date, $data_riwayat);
+                        $data_riwayat = str_replace(["\r\n", "\r", "\n"], ', ', $registrasi_pasien->keluhan);
+                        $this->riwayat_perjalanan_penyakit_api($registrasi_pasien_terakhir, $id_patient, $name_patient, $id_practitioner, $encounter, $date, $data_riwayat);
                     // ===========06. Riwayat Perjalanan Penyakit========
 
-                    // =========================10. Pemeriksaan Penunjang=======================
+                    // ===========10. Pemeriksaan Penunjang=======================
                         // =========================Laboratorium=======================
                             $rekam_laborat = RekamLaborat::where('rekam_id', $registrasi_pasien_terakhir)->get();
                             if ($rekam_laborat->count() != 0) {
@@ -644,10 +543,20 @@ class RawatJalanController extends Controller
                                     $value = str_replace(',', '.', $value);
                                     $satuan = $item->master_laboratorium->satuan;
                                     $this->laboratory_api($registrasi_pasien_terakhir, $id_patient, $name_patient, $encounter, $id_practitioner, $name_practitioner, $datetime, $datetime_end, $kode_pemeriksaan, $kode_loinc, $nama_loinc, $deskripsi_loinc, $kode_snomed, $nama_snomed, $value, $satuan);
+                                    break;
                                 }
                             }
                         // =========================End Laboratorium===================
-                    // =========================End 10. Pemeriksaan Penunjang===================
+                    // ===========End 10. Pemeriksaan Penunjang===================
+
+                    // ===========12. Diagnosis========
+                        $rekam_diagnosa = RekamDiagnosa::where('rekam_id', $registrasi_pasien_terakhir)->first();
+                        if ($rekam_diagnosa != null && $rekam_diagnosa->diagnosis && $rekam_diagnosa->diagnosis->name_id) {
+                            $kode_diagnosa = $rekam_diagnosa->diagnosa;
+                            $deskripsi_diagnosa = $rekam_diagnosa->diagnosis->name_id;
+                            $this->diagnosis_primary_api($registrasi_pasien_terakhir, $kode_diagnosa, $deskripsi_diagnosa, $id_patient, $name_patient, $encounter);
+                        }
+                    // ===========12. Diagnosis========
 
                     // =========================15. Tata laksana===================
                         $pengeluaran_obat = PengeluaranObat::where('rekam_id', $registrasi_pasien_terakhir)->get();
@@ -836,7 +745,7 @@ class RawatJalanController extends Controller
             }
             return view('rawat-jalan.06-riwayat-perjalanan-penyakit.index', compact('data'));
         }
-        public function riwayat_perjalanan_penyakit_ip($id_patient, $name_patient, $id_practitioner, $encounter_id, $date, $data_riwayat){
+        public function riwayat_perjalanan_penyakit_api($rekam_id, $id_patient, $name_patient, $id_practitioner, $encounter_id, $date, $data_riwayat){
             set_time_limit((int) 0);
             $data = $this->rawatJalan->riwayat_perjalanan_penyakit($id_patient, $name_patient, $id_practitioner, $encounter_id, $date, $data_riwayat);
             if (isset($data->id)) {
@@ -1536,6 +1445,46 @@ class RawatJalanController extends Controller
         // =========================end Radiologi===============
     // =========================End 10. Pemeriksaan Penunjang=======================
 
+    // ===========12. Diagnosis============
+        public function diagnosis_menu(){
+            return view('rawat-jalan.12-diagnosis.menu');
+        }
+
+        public function diagnosis_index(Request $request){
+            if ($request->status == "error") {
+                $data = RJ_12_Diagnosis_Log::orderBy('id', 'desc')->paginate(25);
+            }else {
+                $data = RJ_12_Diagnosis::orderBy('id', 'desc')->paginate(25);
+            }
+            return view('rawat-jalan.12-diagnosis.index', compact('data'));
+        }
+
+        public function diagnosis_primary_api($rekam_id, $kode_diagnosa, $deskripsi_diagnosa, $id_patient, $name_patient, $encounter_id){
+            set_time_limit((int) 0);
+
+            $data = $this->rawatJalan->diagnosis_primer($kode_diagnosa, $deskripsi_diagnosa, $id_patient, $name_patient, $encounter_id);
+            if (isset($data->id)) {
+                $diagnosis = new RJ_12_Diagnosis();
+                $diagnosis->encounter = $encounter_id;
+                $diagnosis->rekam_id = $rekam_id;
+                $diagnosis->kode_icd = (String)$kode_diagnosa;
+                $diagnosis->nama_icd = (String)$deskripsi_diagnosa;
+                $diagnosis->id_diagnosa = $data->id;
+                $diagnosis->save();
+            }else {
+                $log_diagnosis = new RJ_12_Diagnosis_Log();
+                $log_diagnosis->rekam_id = $rekam_id;
+                $log_diagnosis->ket_log = json_encode($data);
+                $log_diagnosis->save();
+            }
+            return response()->json([
+                'noreg' => $rekam_id,
+                'message' => 'Data Berhasil Disimpan',
+                'nama schedule' => 'diagnosis primary'
+            ], 200);
+        }
+    // ===========End 12. Diagnosis========
+
     // ===========15. Tata Laksana============
         public function tata_laksana_menu(){
             return view('rawat-jalan.15-tata-lakasana.menu');
@@ -1750,181 +1699,5 @@ class RawatJalanController extends Controller
             ], 200);
         }
     // ===========End 15. Tata Laksana========
-
-    // ===========12. Diagnosis============
-        public function diagnosis_menu(){
-            return view('rawat-jalan.12-diagnosis.menu');
-        }
-
-        public function diagnosis_index(Request $request){
-            if ($request->status == "error") {
-                $data = RJ_12_Diagnosis_Log::orderBy('id', 'desc')->paginate(25);
-            }else {
-                $data = RJ_12_Diagnosis::orderBy('id', 'desc')->paginate(25);
-            }
-            return view('rawat-jalan.12-diagnosis.index', compact('data'));
-        }
-
-        public function diagnosis_primary_api(){
-            set_time_limit((int) 0);
-            $diagnosis = RJ_12_Diagnosis::orderBy('noreg', 'desc')->pluck('noreg')->first();
-            $log_diagnosis = RJ_12_Diagnosis_Log::orderBy('noreg', 'desc')->pluck('noreg')->first();
-            if ($diagnosis == null && $log_diagnosis == null) {
-                $noreg_terakhir = RJ_02_A_Kunjungan_Baru::orderBy('noreg', 'asc')->pluck('noreg')->first();
-            }elseif ($diagnosis > $log_diagnosis) {
-                $noreg_terakhir = $diagnosis;
-            }elseif ($diagnosis < $log_diagnosis) {
-                $noreg_terakhir = $log_diagnosis;
-            }elseif ($diagnosis == $log_diagnosis) {
-                $noreg_terakhir = $diagnosis;
-            }
-
-            $noreg_terakhir = $noreg_terakhir+1;
-
-            $noreg_tanggal_depan = (substr($noreg_terakhir, 0, -4)+1)."0000";
-            $data_tanggal_terakhir = RJ_02_A_Kunjungan_Baru::where('noreg', "<",$noreg_tanggal_depan)->orderBy('noreg', 'desc')->pluck('noreg')->first();
-            if ($noreg_terakhir > $data_tanggal_terakhir) {
-                $noreg_terakhir = $noreg_tanggal_depan+1;
-            }
-
-            //berhentikan sebelum noreg hari sekarang
-            $now = Carbon::now()->setTimezone('Asia/Jakarta')->format('ymd');
-            $noreg_batas = (Integer)($now . '0000');
-            if ($noreg_terakhir > $noreg_batas) {
-                return response()->json([
-                    'noreg' => $noreg_terakhir,
-                    'message' => "Noreg Dalam Pelayanan",
-                    'nama schedule' => 'diagnosis primary'
-                ], 200);
-            }
-
-            if (substr($noreg_terakhir, 2, 4) == '1232') {
-                $noreg_terakhir += 100000000;
-                $noreg_terakhir = substr_replace($noreg_terakhir, '0101', 2, 4);
-            }
-
-            $data_terbesar = RJ_02_A_Kunjungan_Baru::orderBy('noreg', 'desc')->pluck('noreg')->first();
-            if ($noreg_terakhir > $data_terbesar) {
-                return response()->json([
-                    'noreg' => $noreg_terakhir,
-                    'message' => "Noreg Belum Terdaftar",
-                    'nama schedule' => 'diagnosis primary'
-                ], 200);
-            }
-
-            $mapping_kunjungan_poli = RJ_02_A_Kunjungan_Baru::where('noreg', $noreg_terakhir)->first();
-            $registrasi_pasien = RegistrasiPasien::where('NOREG', $noreg_terakhir)->first();
-            if ($registrasi_pasien == null) {
-                $log_diagnosis = new RJ_12_Diagnosis_Log();
-                $log_diagnosis->noreg = $noreg_terakhir;
-                $log_diagnosis->ket_log = 'Noreg Belum Terdaftar';
-                $log_diagnosis->save();
-                return response()->json([
-                    'noreg' => $noreg_terakhir,
-                    'message' => "Noreg Belum Terdaftar",
-                    'nama schedule' => 'diagnosis primary'
-                ], 200);
-            }
-            $mapping_kunjungan_poli = RJ_02_A_Kunjungan_Baru::where('noreg', $noreg_terakhir)->first();
-            $mapping_pasien = MappingPasien::where('norm', $registrasi_pasien->NOPASIEN)->first();
-
-            $sep = Sep::where('tanggal_sep', Carbon::parse($registrasi_pasien->TGLREG)->format('Y-m-d'))
-                ->where('no_rm', $registrasi_pasien->Pasien->NOPASIEN)
-                ->where('no_kartu', $registrasi_pasien->Pasien->NOKARTU)
-                // ->where('jenis_rawat', 'Rawat Jalan')
-                ->select('no_sep')
-                ->first();
-            $mapping_icd10 = MappingICD10RawatJalan::where('NOREG', $noreg_terakhir)->first();
-
-            if ($sep == null && $mapping_icd10 == null){
-                $RJ_12_Diagnosis_Log = new RJ_12_Diagnosis_Log();
-                $RJ_12_Diagnosis_Log->noreg = $noreg_terakhir;
-                $RJ_12_Diagnosis_Log->ket_log = 'Pasien Tidak Memiliki SEP';
-                $RJ_12_Diagnosis_Log->save();
-                return response()->json([
-                    'noreg' => $noreg_terakhir,
-                    'message' => "Pasien Tidak Memiliki mapping diagnosis",
-                    'nama schedule' => 'diagnosis primary'
-                ], 200);
-            }
-
-            if ($sep != null) {
-                $nomer_sep = $sep->no_sep;
-                $attempts = 0;
-                $maxAttempts = 5;
-                $dataArray = null;
-
-                while ($attempts < $maxAttempts) {
-                    try {
-                        $apiUrl = "http://10.10.6.13:10000/api/sep-new/{$nomer_sep}";
-                        $client = new Client();
-                        $response = $client->get($apiUrl);
-                        $apiData = $response->getBody()->getContents();
-                        $dataArray = json_decode($apiData, true);
-
-                        if ($dataArray['response'] == null) {
-                            $log_diagnosis = new RJ_12_Diagnosis_Log();
-                            $log_diagnosis->noreg = $noreg_terakhir;
-                            $log_diagnosis->ket_log = 'Sep Tidak Ditemukan';
-                            $log_diagnosis->save();
-                            return response()->json([
-                                'noreg' => $noreg_terakhir,
-                                'message' => "Sep Tidak Ditemukan",
-                                'nama schedule' => 'diagnosis primary'
-                            ], 200);
-                        }
-
-                        $diagnosa = explode(' - ', $dataArray['response']['diagnosa']);
-                        $kode_diagnosa = $diagnosa[0];
-                        $deskripsi_diagnosa = $diagnosa[1];
-                        break; // Exit the loop if successful
-                    } catch (\Throwable $th) {
-                        $attempts++;
-                        if ($attempts >= $maxAttempts) {
-                            return response()->json([
-                                'noreg' => $noreg_terakhir,
-                                'message' => "gagal mengambil sep setelah {$maxAttempts} percobaan",
-                                'nama schedule' => 'diagnosis primary'
-                            ], 200);
-                        }
-                    }
-                }
-            }
-
-            if ($mapping_icd10 != null) {
-                $kode_diagnosa = $mapping_icd10->KODE_ICD;
-                $deskripsi_diagnosa = $mapping_icd10->KETERANGAN;
-            }
-
-            try {
-            $mapping_pasien_kodesatusehat = $mapping_pasien->kodesatusehat;
-            $mapping_pasien_namasatusehat = $mapping_pasien->nama;
-            $mapping_kunjungan_poli_encounter = $mapping_kunjungan_poli->encounter;
-                $data = $this->rawatJalan->diagnosis_primer($kode_diagnosa, $deskripsi_diagnosa, $mapping_pasien_kodesatusehat, $mapping_pasien_namasatusehat, $mapping_kunjungan_poli_encounter);
-                $diagnosis = new RJ_12_Diagnosis();
-                $diagnosis->encounter = (String)$mapping_kunjungan_poli->encounter;
-                $diagnosis->noreg = (String)$noreg_terakhir;
-                $diagnosis->kode_icd = (String)$kode_diagnosa;
-                $diagnosis->nama_icd = (String)$deskripsi_diagnosa;
-                $diagnosis->id_diagnosa = (String)$data->id;
-                $diagnosis->save();
-            } catch (\Throwable $th) {
-                $log_diagnosis = new RJ_12_Diagnosis_Log();
-                $log_diagnosis->noreg = $noreg_terakhir;
-                $log_diagnosis->ket_log = 'duplicate';
-                $log_diagnosis->save();
-                return response()->json([
-                    'noreg' => $noreg_terakhir,
-                    'message' => "duplicate",
-                    'nama schedule' => 'diagnosis primary'
-                ], 200);
-            }
-            return response()->json([
-                'noreg' => $noreg_terakhir,
-                'message' => 'Data Berhasil Disimpan',
-                'nama schedule' => 'diagnosis primary'
-            ], 200);
-        }
-    // ===========End 12. Diagnosis========
 
 }
