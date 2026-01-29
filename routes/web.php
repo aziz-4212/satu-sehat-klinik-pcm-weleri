@@ -32,6 +32,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/rawat-jalan/menu/membuat-struktur-organisasi-dan-lokasi/ambil-id-organisasi-satu-sehat/{id}', [App\Http\Controllers\RawatJalanController::class, 'ambil_id_organisasi_satu_sehat'])->name('rawat-jalan.membuat-struktur-organisasi-dan-lokasi.ambil-id-organisasi-satu-sehat');
             Route::get('/rawat-jalan/menu/membuat-struktur-organisasi-dan-lokasi/ambil-id-lokasi-satu-sehat/{id}', [App\Http\Controllers\RawatJalanController::class, 'ambil_id_lokasi_satu_sehat'])->name('rawat-jalan.membuat-struktur-organisasi-dan-lokasi.ambil-id-lokasi-satu-sehat');
         // ===========End 00. Membuat Struktur Organisasi dan Lokasi========================
+
         // ===========01. Mencari Data Pasien dan Nakes================
             Route::get('/rawat-jalan/menu/mencari-data-pasien-dan-nakes/menu', [App\Http\Controllers\RawatJalanController::class, 'mencari_data_pasien_dan_nakes_menu'])->name('rawat-jalan.mencari-data-pasien-dan-nakes.menu');
             Route::get('/rawat-jalan/menu/mencari-data-pasien-dan-nakes/menu/pasien', [App\Http\Controllers\RawatJalanController::class, 'pasien_index'])->name('rawat-jalan.mencari-data-pasien-dan-nakes.pasien.index');
@@ -43,34 +44,41 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/rawat-jalan/menu/mencari-data-pasien-dan-nakes/menu/practitioner/{id}/delete', [App\Http\Controllers\RawatJalanController::class, 'practitioner_destroy'])->name('rawat-jalan.mencari-data-pasien-dan-nakes.practitioner.destroy');
             Route::get('/rawat-jalan/menu/mencari-data-pasien-dan-nakes/menu/practitioner/{id}/ambil-id-satu-sehat', [App\Http\Controllers\RawatJalanController::class, 'practitioner_ambil_id_satu_sehat'])->name('rawat-jalan.mencari-data-pasien-dan-nakes.practitioner.ambil-id-satu-sehat');
         // ===========End 01. Mencari Data Pasien dan Nakes================
+
         // ===========02. Pendaftaran Kunjungan Rawat Jalan================
             Route::get('/rawat-jalan/menu/pendaftaran-kunjungan-rawat-jalan/menu', [App\Http\Controllers\RawatJalanController::class, 'pendaftaran_kunjungan_rawat_jalan_menu'])->name('rawat-jalan.pendaftaran-kunjungan-rawat-jalan.menu');
             Route::get('/rawat-jalan/menu/pendaftaran-kunjungan-rawat-jalan/menu/pembuatan-kunjungan-baru', [App\Http\Controllers\RawatJalanController::class, 'pembuatan_kunjungan_baru'])->name('rawat-jalan.pendaftaran-kunjungan-rawat-jalan.pembuatan-kunjungan-baru');
             Route::get('/rawat-jalan/menu/pendaftaran-kunjungan-rawat-jalan/menu/masuk-ke-ruang-pemeriksaan', [App\Http\Controllers\RawatJalanController::class, 'masuk_ke_ruang_pemeriksaan'])->name('rawat-jalan.pendaftaran-kunjungan-rawat-jalan.masuk-ke-ruang-pemeriksaan');
         // ===========End 02. Pendaftaran Kunjungan Rawat Jalan========
+
         // ===========04. Hasil Pemeriksaan Fisik========
             Route::get('/rawat-jalan/menu/hasil-pemeriksaan-fisik/menu', [App\Http\Controllers\RawatJalanController::class, 'hasil_pemeriksaan_fisik_menu'])->name('rawat-jalan.hasil-pemeriksaan-fisik.menu');
             // ===========Pemeriksaan Tanda Tanda Vital========
                 Route::get('/rawat-jalan/menu/hasil-pemeriksaan-fisik/pemeriksaan-tanda-tanda-vital', [App\Http\Controllers\RawatJalanController::class, 'pemeriksaan_tanda_tanda_vital'])->name('rawat-jalan.hasil-pemeriksaan-fisik.pemeriksaan-tanda-tanda-vital');
             // ===========Pemeriksaan Tanda Tanda Vital========
         // ===========End 04. Hasil Pemeriksaan Fisik========
+
         // ===========06. Riwayat Perjalanan Penyakit========
             Route::get('/rawat-jalan/menu/riwayat-perjalanan-penyakit', [App\Http\Controllers\RawatJalanController::class, 'riwayat_perjalanan_penyakit_index'])->name('rawat-jalan.riwayat-perjalanan-penyakit.index');
         // ===========End 06. Riwayat Perjalanan Penyakit====
+
         // ===========10. Pemeriksaan Penunjang========
             Route::get('/rawat-jalan/menu/pemeriksaan-penunjang/menu', [App\Http\Controllers\RawatJalanController::class, 'pemeriksaan_penunjang_menu'])->name('rawat-jalan.pemeriksaan-penunjang.menu');
             // ========Laboratorium========
                 Route::get('/rawat-jalan/menu/pemeriksaan-penunjang/menu/laboratorium', [App\Http\Controllers\RawatJalanController::class, 'laboratorium_index'])->name('rawat-jalan.pemeriksaan-penunjang.laboratorium.index');
             // ========End Laboratorium====
         // ===========End 10. Pemeriksaan Penunjang====
+
         // ===========12. Diagnosis========
             Route::get('/rawat-jalan/menu/diagnosis/menu', [App\Http\Controllers\RawatJalanController::class, 'diagnosis_menu'])->name('rawat-jalan.diagnosis.menu');
             Route::get('/rawat-jalan/menu/diagnosis/menu/diagnosis-index', [App\Http\Controllers\RawatJalanController::class, 'diagnosis_index'])->name('rawat-jalan.diagnosis.index');
         // ===========End 12. Diagnosis========
-        // ===========15. Tata Laksana========
-        // ===========End 15. Tata Laksana====
+
+        // ===========14. Tindakan Konseling====
             Route::get('/rawat-jalan/menu/tindakan/menu', [App\Http\Controllers\RawatJalanController::class, 'tindakan_menu'])->name('rawat-jalan.tindakan.menu');
             Route::get('/rawat-jalan/menu/tindakan/menu/konseling', [App\Http\Controllers\RawatJalanController::class, 'konseling_index'])->name('rawat-jalan.tindakan.konseling.index');
+        // ===========End 14. Tindakan Konseling========
+
         // ===========15. Tata Laksana========
             Route::get('/rawat-jalan/menu/tata-laksana/menu', [App\Http\Controllers\RawatJalanController::class, 'tata_laksana_menu'])->name('rawat-jalan.tata-laksana.menu');
             Route::get('/rawat-jalan/menu/tata-laksana/menu/obat/menu', [App\Http\Controllers\RawatJalanController::class, 'tata_laksana_obat_menu'])->name('rawat-jalan.tata-laksana.obat.menu');
@@ -89,6 +97,10 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/rawat-jalan/menu/tata-laksana/menu/obat/menu/pengkajian-resep', [App\Http\Controllers\RawatJalanController::class, 'pengkajian_resep_index'])->name('rawat-jalan.tata-laksana.obat.pengkajian-resep.index');
             Route::get('/rawat-jalan/menu/tata-laksana/menu/obat/menu/pengeluaran-obat', [App\Http\Controllers\RawatJalanController::class, 'pengeluaran_obat_index'])->name('rawat-jalan.tata-laksana.obat.pengeluaran-resep.index');
         // ===========End 15. Tata Laksana========
+
+        // ===========18. Kondisi Saat Meninggalkan Fasyankes==========
+            Route::get('/rawat-jalan/menu/kondisi-saat-meninggalkan-fasyankes', [App\Http\Controllers\RawatJalanController::class, 'kondisi_saat_meninggalkan_fasyankes_index'])->name('rawat-jalan.kondisi-saat-meninggalkan-fasyankes.index');
+        // ===========End 18. Kondisi Saat Meninggalkan Fasyankes======
     // ===========modul Rawat Jalan========================
 
     Route::get('/master-mapmr-loinc/data-mapmr', [App\Http\Controllers\MasterMapmrLoincController::class, 'getData_mapmr']);

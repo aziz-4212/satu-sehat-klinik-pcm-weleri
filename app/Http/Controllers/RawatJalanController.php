@@ -41,6 +41,8 @@ use App\Models\RJ_15_Questionnaire_Response;
 use App\Models\RJ_15_Questionnaire_Response_Log;
 use App\Models\RJ_15_Medication_Dispense;
 use App\Models\RJ_15_Medication_Dispense_Log;
+use App\Models\RJ_18_Kondisi_Saat_Meninggalkan_Fasyankes_Log;
+use App\Models\RJ_18_Kondisi_Saat_Meninggalkan_Fasyankes;
 use App\Models\Configs;
 class RawatJalanController extends Controller
 {
@@ -568,6 +570,9 @@ class RawatJalanController extends Controller
                         }
                     // ===========End 14. Tindakan Konseling====
 
+                    // ===========18. Kondisi Saat Meninggalkan Fasyankes========
+                        $this->kondisi_saat_meninggalkan_fasyankes_api($registrasi_pasien_terakhir, $encounter, $id_patient, $name_patient);
+                    // ===========End 18. Kondisi Saat Meninggalkan Fasyankes====
 
                     // =========================15. Tata laksana===================
                         $pengeluaran_obat = PengeluaranObat::where('rekam_id', $registrasi_pasien_terakhir)->get();
@@ -1766,4 +1771,36 @@ class RawatJalanController extends Controller
         }
     // ===========End 15. Tata Laksana========
 
+    // ===========18. Kondisi Saat Meninggalkan Fasyankes========
+        public function kondisi_saat_meninggalkan_fasyankes_index(Request $request){
+            if ($request->status == "error") {
+                $data = RJ_18_Kondisi_Saat_Meninggalkan_Fasyankes_Log::orderBy('id', 'desc')->paginate(25);
+            }else {
+                $data = RJ_18_Kondisi_Saat_Meninggalkan_Fasyankes::orderBy('id', 'desc')->paginate(25);
+            }
+            return view('rawat-jalan.18-kondisi-saat-meninggalkan-fasyankes.index', compact('data'));
+        }
+
+        public function kondisi_saat_meninggalkan_fasyankes_api($rekam_id, $encounter_id, $id_patient, $name_patient){
+            set_time_limit((int) 0);
+            $data = $this->rawatJalan->kondisi_saat_meninggalkan_fasyankes($id_patient, $name_patient, $encounter_id);
+            if (isset($data->id)) {
+                $RJ_18_Kondisi_Saat_Meninggalkan_Fasyankes = new RJ_18_Kondisi_Saat_Meninggalkan_Fasyankes();
+                $RJ_18_Kondisi_Saat_Meninggalkan_Fasyankes->encounter = $encounter_id;
+                $RJ_18_Kondisi_Saat_Meninggalkan_Fasyankes->rekam_id = $rekam_id;
+                $RJ_18_Kondisi_Saat_Meninggalkan_Fasyankes->condition_id = $data->id;
+                $RJ_18_Kondisi_Saat_Meninggalkan_Fasyankes->save();
+            }else {
+                $RJ_18_Kondisi_Saat_Meninggalkan_Fasyankes_Log = new RJ_18_Kondisi_Saat_Meninggalkan_Fasyankes_Log();
+                $RJ_18_Kondisi_Saat_Meninggalkan_Fasyankes_Log->rekam_id = $rekam_id;
+                $RJ_18_Kondisi_Saat_Meninggalkan_Fasyankes_Log->ket_log = json_encode($data);
+                $RJ_18_Kondisi_Saat_Meninggalkan_Fasyankes_Log->save();
+            }
+            return response()->json([
+                'noreg' => $rekam_id,
+                'message' => 'Data Berhasil Disimpan',
+                'nama schedule' => 'tindakan konseling'
+            ], 200);
+        }
+    // ===========End 14. Tindakan Konseling====
 }

@@ -1089,8 +1089,6 @@ class RawatJalan
         }
     // ==================================06. Riwayat Perjalanan Penyakit==================================
 
-
-
     // =========================10. Pemeriksaan Penunjang=======================
         // =========================Laboratorium=======================
             public function procedure_status_puasa_laboratorium_nominal($Patient_id, $Patient_Name, $Encounter_id, $Practitioner_id, $Practitioner_Name, $start_date, $end_date)
@@ -2733,5 +2731,73 @@ class RawatJalan
                 return $response;
             }
         // ===========Pengeluaran Obat========
-    // ===========End 15. Tata Laksana========
+    // ===========End 15. Tata Laksana====
+
+    // ===========18. Kondisi Saat Meninggalkan Fasyankes=======
+        public function kondisi_saat_meninggalkan_fasyankes($id_patient, $name_patient, $encounter_id)
+        {
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => $this->url->base_url.'/Condition',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS =>'{
+                    "resourceType": "Condition",
+                    "clinicalStatus": {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+                                "code": "active",
+                                "display": "Active"
+                            }
+                        ]
+                    },
+                    "category": [
+                        {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                                    "code": "problem-list-item",
+                                    "display": "Problem List Item"
+                                }
+                            ]
+                        }
+                    ],
+                    "code": {
+                        "coding": [
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "359746009",
+                                "display": "Patients condition stable"
+                            }
+                        ]
+                    },
+                    "subject": {
+                        "reference": "Patient/'.$id_patient.'",
+                        "display": "'.$name_patient.'"
+                    },
+                    "encounter": {
+                        "reference": "Encounter/'.$encounter_id.'"
+                    }
+                }',
+                CURLOPT_HTTPHEADER => array(
+                    'Content-Type: application/json',
+                    'Authorization: Bearer '.$this->token
+                ),
+                ));
+
+            $response = curl_exec($curl);
+
+            curl_close($curl);
+            $response = json_decode($response);
+            return $response;
+        }
+    // ===========End 18. Kondisi Saat Meninggalkan Fasyankes====
+
 }
