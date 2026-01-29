@@ -68,6 +68,10 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/rawat-jalan/menu/diagnosis/menu/diagnosis-index', [App\Http\Controllers\RawatJalanController::class, 'diagnosis_index'])->name('rawat-jalan.diagnosis.index');
         // ===========End 12. Diagnosis========
         // ===========15. Tata Laksana========
+        // ===========End 15. Tata Laksana====
+            Route::get('/rawat-jalan/menu/tindakan/menu', [App\Http\Controllers\RawatJalanController::class, 'tindakan_menu'])->name('rawat-jalan.tindakan.menu');
+            Route::get('/rawat-jalan/menu/tindakan/menu/konseling', [App\Http\Controllers\RawatJalanController::class, 'konseling_index'])->name('rawat-jalan.tindakan.konseling.index');
+        // ===========15. Tata Laksana========
             Route::get('/rawat-jalan/menu/tata-laksana/menu', [App\Http\Controllers\RawatJalanController::class, 'tata_laksana_menu'])->name('rawat-jalan.tata-laksana.menu');
             Route::get('/rawat-jalan/menu/tata-laksana/menu/obat/menu', [App\Http\Controllers\RawatJalanController::class, 'tata_laksana_obat_menu'])->name('rawat-jalan.tata-laksana.obat.menu');
 

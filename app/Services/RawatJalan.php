@@ -1918,6 +1918,198 @@ class RawatJalan
         }
     // ==================================12. Diagnosis==================================
 
+    // ===========14. Tindakan Konseling========
+        public function tindakan_konseling_service_request($rekam_id, $kode_diagnosa, $deskripsi_diagnosa, $id_patient, $encounter_id, $practitioner_id, $practitioner_name, $date)
+        {
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => $this->url->base_url.'/ServiceRequest',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS =>'{
+                    "resourceType": "ServiceRequest",
+                    "identifier": [
+                        {
+                            "system": "http://sys-ids.kemkes.go.id/servicerequest/'.$this->organization_id.'",
+                            "value": "'.$rekam_id.'"
+                        }
+                    ],
+                    "status": "active",
+                    "intent": "original-order",
+                    "priority": "routine",
+                    "category": [
+                        {
+                            "coding": [
+                                {
+                                    "system": "http://snomed.info/sct",
+                                    "code": "409063005",
+                                    "display": "Counseling"
+                                }
+                            ]
+                        }
+                    ],
+                    "code": {
+                        "coding": [
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-9-cm",
+                                "code": "94.4",
+                                "display": "Other psychotherapy and counselling"
+                            },
+                            {
+                                "system": "http://terminology.kemkes.go.id/CodeSystem/kptl",
+                                "code": "12017.PC013",
+                                "display": "Konseling Individu"
+                            }
+                        ]
+                    },
+                    "subject": {
+                        "reference": "Patient/'.$id_patient.'"
+                    },
+                    "encounter": {
+                        "reference": "Encounter/'.$encounter_id.'"
+                    },
+                    "occurrenceDateTime": "'.$date.'",
+                    "authoredOn": "'.$date.'",
+                    "requester": {
+                        "reference": "Practitioner/'.$practitioner_id.'",
+                        "display": "'.$practitioner_name.'"
+                    },
+                    "performer": [
+                        {
+                            "reference": "Practitioner/'.$practitioner_id.'",
+                            "display": "'.$practitioner_name.'"
+                        }
+                    ],
+                    "reasonCode": [
+                        {
+                            "coding": [
+                                {
+                                    "system": "http://hl7.org/fhir/sid/icd-10",
+                                    "code": "'.$kode_diagnosa.'",
+                                    "display": "'.$deskripsi_diagnosa.'"
+                                }
+                            ]
+                        }
+                    ],
+                    "note": [
+                        {
+                            "text": "Pasien melakukan konseling terkait masalah penyakitnya"
+                        }
+                    ]
+                }',
+                CURLOPT_HTTPHEADER => array(
+                    'Content-Type: application/json',
+                    'Authorization: Bearer '.$this->token
+                ),
+            ));
+
+            $response = curl_exec($curl);
+
+            curl_close($curl);
+            $response = json_decode($response);
+            return $response;
+        }
+
+        public function tindakan_konseling_procedure($service_request_id, $kode_diagnosa, $deskripsi_diagnosa, $id_patient, $name_patient, $encounter_id, $practitioner_id, $practitioner_name, $date)
+        {
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => $this->url->base_url.'/Procedure',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS =>'{
+                    "resourceType": "Procedure",
+                    "basedOn": [
+                        {
+                            "reference": "ServiceRequest/'.$service_request_id.'"
+                        }
+                    ],
+                    "status": "completed",
+                    "category": {
+                        "coding": [
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "409063005",
+                                "display": "Counseling"
+                            }
+                        ]
+                    },
+                    "code": {
+                        "coding": [
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-9-cm",
+                                "code": "94.4",
+                                "display": "Other psychotherapy and counselling"
+                            },
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "445142003",
+                                "display": "Counseling about disease"
+                            }
+                        ]
+                    },
+                    "subject": {
+                        "reference": "Patient/'.$id_patient.'",
+                        "display": "'.$name_patient.'"
+                    },
+                    "encounter": {
+                        "reference": "Encounter/'.$encounter_id.'"
+                    },
+                    "performedPeriod": {
+                        "start": "'.$date.'",
+                        "end": "'.$date.'"
+                    },
+                    "performer": [
+                        {
+                            "actor": {
+                                "reference": "Practitioner/'.$practitioner_id.'",
+                                "display": "'.$practitioner_name.'"
+                            }
+                        }
+                    ],
+                    "reasonCode": [
+                        {
+                            "coding": [
+                                {
+                                    "system": "http://hl7.org/fhir/sid/icd-10",
+                                    "code": "'.$kode_diagnosa.'",
+                                    "display": "'.$deskripsi_diagnosa.'"
+                                }
+                            ]
+                        }
+                    ],
+                    "note": [
+                        {
+                            "text": "Konseling keresahan pasien"
+                        }
+                    ]
+                }',
+                CURLOPT_HTTPHEADER => array(
+                    'Content-Type: application/json',
+                    'Authorization: Bearer '.$this->token
+                ),
+            ));
+
+            $response = curl_exec($curl);
+
+            curl_close($curl);
+            $response = json_decode($response);
+            return $response;
+        }
+    // ===========End 14. Tindakan Konseling====
+
     // ===========15. Tata Laksana========
         // ===========peresepan obat========
             public function kfa_api($search = '', $page = 1, $size = 100)

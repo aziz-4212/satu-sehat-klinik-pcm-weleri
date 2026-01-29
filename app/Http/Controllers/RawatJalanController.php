@@ -32,6 +32,8 @@ use App\Models\RJ_10_Radiologi;
 use App\Models\RJ_10_Radiologi_Log;
 use App\Models\RJ_12_Diagnosis;
 use App\Models\RJ_12_Diagnosis_Log;
+use App\Models\RJ_14_Tindakan_Konseling_Log;
+use App\Models\RJ_14_Tindakan_Konseling;
 use App\Models\RJ_15_Medication_Obat;
 use App\Models\RJ_15_Medication_Request;
 use App\Models\RJ_15_Medication_Request_Log;
@@ -374,7 +376,7 @@ class RawatJalanController extends Controller
                 }
 
                 $registrasi_pasien_terakhir = $registrasi_pasien_terakhir+1;
-                // $registrasi_pasien_terakhir = 19;
+                // $registrasi_pasien_terakhir = 23;
                 $registrasi_pasien = Rekam::where('id', $registrasi_pasien_terakhir)->first();
                 if ($registrasi_pasien == null) {
                     $log_encounter = new RJ_02_A_Kunjungan_Baru_Log();
@@ -471,7 +473,7 @@ class RawatJalanController extends Controller
 
                     // ===========================Masuk ke Ruang Pemeriksaan===========================
                         $encounter      = $encounter->id;
-                        // $encounter      = "4efb68c7-be49-4e58-a5bc-ffad84fc4f1b";
+                        // $encounter      = "ec031d36-4a51-4d2d-b8b8-ccc2f0271e20";
                         $datetime       = $date;
                         $datetime_end   = date('Y-m-d', strtotime($tanggal)).'T'.date('H:i:s', strtotime($jam . ' +15 minutes')).'.000+07:00';
                         $id_location    = "2b21293b-3cab-4c46-b7a0-9289e2526f2c";
@@ -557,6 +559,15 @@ class RawatJalanController extends Controller
                             $this->diagnosis_primary_api($registrasi_pasien_terakhir, $kode_diagnosa, $deskripsi_diagnosa, $id_patient, $name_patient, $encounter);
                         }
                     // ===========12. Diagnosis========
+
+                    // ===========14. Tindakan Konseling========
+                        if ($rekam_diagnosa != null && $rekam_diagnosa->diagnosis && $rekam_diagnosa->diagnosis->name_id) {
+                            $kode_diagnosa = $rekam_diagnosa->diagnosa;
+                            $deskripsi_diagnosa = $rekam_diagnosa->diagnosis->name_id;
+                            $this->konseling_api($registrasi_pasien_terakhir, $encounter, $kode_diagnosa, $deskripsi_diagnosa, $id_patient, $name_patient, $id_practitioner, $name_practitioner, $date);
+                        }
+                    // ===========End 14. Tindakan Konseling====
+
 
                     // =========================15. Tata laksana===================
                         $pengeluaran_obat = PengeluaranObat::where('rekam_id', $registrasi_pasien_terakhir)->get();
@@ -1484,6 +1495,61 @@ class RawatJalanController extends Controller
             ], 200);
         }
     // ===========End 12. Diagnosis========
+
+    // ===========14. Tindakan Konseling========
+            public function tindakan_menu(){
+                return view('rawat-jalan.14-tindakan.menu');
+            }
+
+            public function konseling_index(Request $request){
+                if ($request->status == "error") {
+                    $data = RJ_14_Tindakan_Konseling_Log::orderBy('id', 'desc')->paginate(25);
+                }else {
+                    $data = RJ_14_Tindakan_Konseling::orderBy('id', 'desc')->paginate(25);
+                }
+                return view('rawat-jalan.14-tindakan.konseling.index', compact('data'));
+            }
+
+            public function konseling_api($rekam_id, $encounter_id, $kode_diagnosa, $deskripsi_diagnosa, $id_patient, $name_patient, $practitioner_id, $practitioner_name, $date){
+                set_time_limit((int) 0);
+
+                $data = $this->rawatJalan->tindakan_konseling_service_request($rekam_id, $kode_diagnosa, $deskripsi_diagnosa, $id_patient, $encounter_id, $practitioner_id, $practitioner_name, $date);
+                if (isset($data->id)) {
+                    $RJ_14_Tindakan_Konseling = new RJ_14_Tindakan_Konseling();
+                    $RJ_14_Tindakan_Konseling->encounter = $encounter_id;
+                    $RJ_14_Tindakan_Konseling->rekam_id = $rekam_id;
+                    $RJ_14_Tindakan_Konseling->service_request_id = $data->id;
+                    $RJ_14_Tindakan_Konseling->save();
+
+                    $RJ_14_Tindakan_Konseling = RJ_14_Tindakan_Konseling::where('encounter', $encounter_id)
+                                                    ->where('rekam_id', $rekam_id)
+                                                    ->first();
+                    if ($RJ_14_Tindakan_Konseling != null) {
+                        $service_request_id = $RJ_14_Tindakan_Konseling->service_request_id;
+                        $data = $this->rawatJalan->tindakan_konseling_procedure($service_request_id, $kode_diagnosa, $deskripsi_diagnosa, $id_patient, $name_patient, $encounter_id, $practitioner_id, $practitioner_name, $date);
+                        if (isset($data->id)) {
+                            $RJ_14_Tindakan_Konseling->procedure_id = $data->id;
+                            $RJ_14_Tindakan_Konseling->save();
+                        }
+                    }else {
+                        $RJ_14_Tindakan_Konseling_Log = new RJ_14_Tindakan_Konseling_Log();
+                        $RJ_14_Tindakan_Konseling_Log->rekam_id = $rekam_id;
+                        $RJ_14_Tindakan_Konseling_Log->ket_log = json_encode($data);
+                        $RJ_14_Tindakan_Konseling_Log->save();
+                    }
+                }else {
+                    $RJ_14_Tindakan_Konseling_Log = new RJ_14_Tindakan_Konseling_Log();
+                    $RJ_14_Tindakan_Konseling_Log->rekam_id = $rekam_id;
+                    $RJ_14_Tindakan_Konseling_Log->ket_log = json_encode($data);
+                    $RJ_14_Tindakan_Konseling_Log->save();
+                }
+                return response()->json([
+                    'noreg' => $rekam_id,
+                    'message' => 'Data Berhasil Disimpan',
+                    'nama schedule' => 'tindakan konseling'
+                ], 200);
+            }
+    // ===========End 14. Tindakan Konseling====
 
     // ===========15. Tata Laksana============
         public function tata_laksana_menu(){
