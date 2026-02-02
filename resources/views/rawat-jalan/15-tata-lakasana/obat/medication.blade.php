@@ -180,7 +180,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="kode_satu_sehat">Kode Satu Sehat</label>
-                                        <input type="text" class="form-control" name="kode_satu_sehat" value="{{ $item->kode_satu_sehat }}" required>
+                                        <input type="text" class="form-control" name="kode_satu_sehat" value="{{ $item->kode_satu_sehat }}">
                                     </div>
                                 </div>
                                 <div class="modal-footer">

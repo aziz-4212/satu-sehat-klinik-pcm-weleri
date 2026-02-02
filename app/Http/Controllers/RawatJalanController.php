@@ -1740,7 +1740,7 @@ class RawatJalanController extends Controller
                         // $medication_dispense_model = RJ_15_Medication_Dispense::where('noreg', $noreg_terakhir)->where('id_medication', 'dce53a47-bb37-4558-b525-fbb2f494f885')->first();
 
                         $medication_id = $medication_dispense_obat->id;
-                        $medication_id = '109e9faa-d8f6-4768-9cdc-ba7069324dec';
+                        // $medication_id = '109e9faa-d8f6-4768-9cdc-ba7069324dec';
                         $medication_request_id = $medication_request->id;
                         // $medication_request_id = '661e88a4-c193-48b7-909e-e73598109ee2';
 
