@@ -91,55 +91,10 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ route('patient.pasien_nik_tidak_terdaftar.index') }}"
-                                    class="nav-link{{ request()->is(['pasien-nik-tidak-terdaftar', 'pasien-nik-tidak-terdaftar/*']) ? ' active' : '' }}">
-                                    <i class="far fa-circle nav-icon text-warning"></i>
-                                    <p>Pasien NIK Tidak Terdaftar</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
                                 <a href="{{ route('practitioner.index') }}"
                                     class="nav-link{{ request()->is(['practitioner', 'practitioner/*']) ? ' active' : '' }}">
                                     <i class="far fa-circle nav-icon text-success"></i>
-                                    <p>Data Dokter</p>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-
-                    <!-- MASTER OBAT & MEDICAL -->
-                    <li class="nav-item{{ request()->is(['master-mapmr-loinc', 'master-mapmr-loinc/*', 'master-satuan-obat', 'master-satuan-obat/*', 'master-kfa-obat', 'master-kfa-obat/*', 'medication', 'medication/*']) ? ' menu-open' : '' }}">
-                        <a href="#" class="nav-link{{ request()->is(['master-mapmr-loinc', 'master-mapmr-loinc/*', 'master-satuan-obat', 'master-satuan-obat/*', 'master-kfa-obat', 'master-kfa-obat/*', 'medication', 'medication/*']) ? ' active' : '' }}">
-                            <i class="nav-icon fas fa-pills text-success"></i>
-                            <p>Master Obat & Medical<i class="right fas fa-angle-left"></i></p>
-                        </a>
-                        <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a href="{{ route('master-mapmr-loinc.index') }}"
-                                    class="nav-link{{ request()->is(['master-mapmr-loinc', 'master-mapmr-loinc/*']) ? ' active' : '' }}">
-                                    <i class="far fa-circle nav-icon text-primary"></i>
-                                    <p>Master LOINC</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ route('master-satuan-obat.index') }}"
-                                    class="nav-link{{ request()->is(['master-satuan-obat', 'master-satuan-obat/*']) ? ' active' : '' }}">
-                                    <i class="far fa-circle nav-icon text-warning"></i>
-                                    <p>Bentuk Obat</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ route('master-kfa-obat.index') }}"
-                                    class="nav-link{{ request()->is(['master-kfa-obat', 'master-kfa-obat/*']) ? ' active' : '' }}">
-                                    <i class="far fa-circle nav-icon text-info"></i>
-                                    <p>KFA Obat</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ route('medication.index') }}"
-                                    class="nav-link{{ request()->is(['medication', 'medication/*']) ? ' active' : '' }}">
-                                    <i class="far fa-circle nav-icon text-success"></i>
-                                    <p>Medication</p>
+                                    <p>Data Practitioner</p>
                                 </a>
                             </li>
                         </ul>

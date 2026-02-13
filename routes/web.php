@@ -103,28 +103,6 @@ Route::middleware(['auth'])->group(function () {
         // ===========End 18. Kondisi Saat Meninggalkan Fasyankes======
     // ===========modul Rawat Jalan========================
 
-    Route::get('/master-mapmr-loinc/data-mapmr', [App\Http\Controllers\MasterMapmrLoincController::class, 'getData_mapmr']);
-    Route::get('/master-mapmr-loinc/search-mapmr', [App\Http\Controllers\MasterMapmrLoincController::class, 'search_mapmr']);
-    Route::get('/master-mapmr-loinc/data-loinc', [App\Http\Controllers\MasterMapmrLoincController::class, 'getData_loinc']);
-    Route::get('/master-mapmr-loinc/search-loinc', [App\Http\Controllers\MasterMapmrLoincController::class, 'search_loinc']);
-    Route::resource('/master-mapmr-loinc', App\Http\Controllers\MasterMapmrLoincController::class);
-    Route::get('/encounter', [App\Http\Controllers\EncounterController::class, 'index'])->name('encounter.index');
-
     Route::get('/patient', [App\Http\Controllers\PatientController::class, 'index'])->name('patient.index');
-    Route::get('/patient/create', [App\Http\Controllers\PatientController::class, 'create'])->name('patient.create');
-    Route::post('/patient/create/post', [App\Http\Controllers\PatientController::class, 'store'])->name('patient.store');
-
-    Route::get('/pasien-nik-tidak-terdaftar', [App\Http\Controllers\PatientController::class, 'pasien_nik_tidak_terdaftar'])->name('patient.pasien_nik_tidak_terdaftar.index');
-    Route::get('/pasien-nik-tidak-terdaftar/download-excel', [App\Http\Controllers\PatientController::class, 'pasien_nik_tidak_terdaftar_download_excel'])->name('patient.pasien_nik_tidak_terdaftar.download_excel');
-
     Route::get('/practitioner', [App\Http\Controllers\PractitionerController::class, 'index'])->name('practitioner.index');
-    Route::get('/practitioner/create', [App\Http\Controllers\PractitionerController::class, 'create'])->name('practitioner.create');
-    Route::post('/practitioner/create/post', [App\Http\Controllers\PractitionerController::class, 'store'])->name('practitioner.store');
-
-    Route::resource('/master-satuan-obat', App\Http\Controllers\MasterSatuanObatController::class);
-    Route::resource('/master-kfa-obat', App\Http\Controllers\MasterKfaObatController::class);
-
-    Route::get('/medication', [App\Http\Controllers\MedicationController::class, 'index'])->name('medication.index');
-    Route::get('/medication/create', [App\Http\Controllers\MedicationController::class, 'create'])->name('medication.create');
-    Route::post('/medication/create/post', [App\Http\Controllers\MedicationController::class, 'store'])->name('medication.store');
 });

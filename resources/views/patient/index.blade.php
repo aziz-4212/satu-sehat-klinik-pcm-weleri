@@ -79,9 +79,6 @@
                             </form>
                         </div>
                     </div>
-                    <div style="text-align: right;">
-                        <a href="{{route('patient.create')}}" class="btn bg-teal">Create Patient</a>
-                    </div>
                     <table id="example3" class="table table-bordered table-striped">
                         <thead>
                             <tr>

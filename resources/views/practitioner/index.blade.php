@@ -84,9 +84,6 @@
                             </form>
                         </div>
                     </div>
-                    <div style="text-align: right;">
-                        <a href="{{route('practitioner.create')}}" class="btn bg-teal">Create Practitioner</a>
-                    </div>
                     <table id="example3" class="table table-bordered table-striped">
                         <thead>
                             <tr>
