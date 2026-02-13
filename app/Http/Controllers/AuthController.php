@@ -8,50 +8,28 @@ use Illuminate\Http\Request;
 use Auth;
 use App\Services\Config;
 use App\Models\User;
-use App\Models\LogKyc;
-// ==================rawat jalan=======================
-use App\Models\MappingKunjunganPoli;
-use App\Models\LogEncounter;
-use App\Models\RjMasukRuang;
-use App\Models\RjMasukRuangLog;
-use App\Models\Diagnosis;
-use App\Models\LogDiagnosis;
-use App\Models\Observation;
-use App\Models\LogObservation;
-use App\Models\ServiceRequest;
-use App\Models\LogServiceRequest;
-use App\Models\ProcedureEdukasiNutrisi;
-use App\Models\LogProcedureEdukasiNutrisi;
-use App\Models\MasterKfaObat;
-use App\Models\MedicationRequestModel;
-use App\Models\LogMedicationRequest;
-use App\Models\MedicationStatementModel;
-use App\Models\LogMedicationStatement;
-use App\Models\QuestionnaireResponseModel;
-use App\Models\LogQuestionnaireResponse;
-use App\Models\CompositionModel;
-use App\Models\LogComposition;
-use App\Models\CareplanRencanaRawatPasienModel;
-use App\Models\LogCareplanRencanaRawatPasien;
-// ==================End rawat jalan=======================
 
-// ==================rawat Inap=======================
-use App\Models\MappingKunjunganInap;
-use App\Models\LogEncounterInap;
-use App\Models\RIRencanaRawatPasien;
-use App\Models\RIRencanaRawatPasienLog;
-use App\Models\RIDiagnosis;
-use App\Models\RIDiagnosisLog;
-// ==================End rawat Inap=======================
-
-// ==================IGD=======================
-use App\Models\MappingKunjunganIgd;
-use App\Models\LogEncounterIgd;
-use App\Models\IGDSaranaTransportasiKedatangan;
-use App\Models\IGDSaranaTransportasiKedatanganLog;
-// ==================End IGD=======================
+// ==================Dashboard Rawat Jalan=====
+use App\Models\RJ_02_A_Kunjungan_Baru;
+use App\Models\RJ_02_A_Kunjungan_Baru_Log;
+use App\Models\RJ_02_B_Masuk_Ruang;
+use App\Models\RJ_02_B_Masuk_Ruang_Log;
+use App\Models\RJ_04_Pemeriksaan_Tanda_Tanda_Vital;
+use App\Models\RJ_04_Pemeriksaan_Tanda_Tanda_Vital_Log;
+use App\Models\RJ_06_Riwayat_Perjalanan_Penyakit;
+use App\Models\RJ_06_Riwayat_Perjalanan_Penyakit_Log;
+use App\Models\RJ_10_Laboratory;
+use App\Models\RJ_10_Laboratory_Log;
+use App\Models\RJ_12_Diagnosis;
+use App\Models\RJ_12_Diagnosis_Log;
+use App\Models\RJ_14_Tindakan_Konseling;
+use App\Models\RJ_14_Tindakan_Konseling_Log;
+use App\Models\RJ_18_Kondisi_Saat_Meninggalkan_Fasyankes;
+use App\Models\RJ_18_Kondisi_Saat_Meninggalkan_Fasyankes_Log;
+// ==================Dashboard Rawat Jalan=====
 
 // ==================Kyc=======================
+use App\Models\LogKyc;
 use phpseclib3\Crypt\PublicKeyLoader;
 use phpseclib3\Crypt\RSA;
 use phpseclib3\Crypt\AES;
@@ -68,7 +46,27 @@ class AuthController extends Controller
 
     public function dashboard_rawat_jalan()
     {
-        return view('dashboard.rawat-jalan');
+        $RJ_02_A_Kunjungan_Baru = RJ_02_A_Kunjungan_Baru::latest()->first();
+        $RJ_02_A_Kunjungan_Baru_Log = RJ_02_A_Kunjungan_Baru_Log::latest()->first();
+        $RJ_02_B_Masuk_Ruang = RJ_02_B_Masuk_Ruang::latest()->first();
+        $RJ_02_B_Masuk_Ruang_Log = RJ_02_B_Masuk_Ruang_Log::latest()->first();
+        $RJ_04_Pemeriksaan_Tanda_Tanda_Vital = RJ_04_Pemeriksaan_Tanda_Tanda_Vital::latest()->first();
+        $RJ_04_Pemeriksaan_Tanda_Tanda_Vital_Log = RJ_04_Pemeriksaan_Tanda_Tanda_Vital_Log::latest()->first();
+        $RJ_06_Riwayat_Perjalanan_Penyakit = RJ_06_Riwayat_Perjalanan_Penyakit::latest()->first();
+        $RJ_06_Riwayat_Perjalanan_Penyakit_Log = RJ_06_Riwayat_Perjalanan_Penyakit_Log::latest()->first();
+        $RJ_10_Laboratory = RJ_10_Laboratory::latest()->first();
+        $RJ_10_Laboratory_Log = RJ_10_Laboratory_Log::latest()->first();
+        $RJ_12_Diagnosis = RJ_12_Diagnosis::latest()->first();
+        $RJ_12_Diagnosis_Log = RJ_12_Diagnosis_Log::latest()->first();
+        $RJ_14_Tindakan_Konseling = RJ_14_Tindakan_Konseling::latest()->first();
+        $RJ_14_Tindakan_Konseling_Log = RJ_14_Tindakan_Konseling_Log::latest()->first();
+        $RJ_18_Kondisi_Saat_Meninggalkan_Fasyankes = RJ_18_Kondisi_Saat_Meninggalkan_Fasyankes::latest()->first();
+        $RJ_18_Kondisi_Saat_Meninggalkan_Fasyankes_Log = RJ_18_Kondisi_Saat_Meninggalkan_Fasyankes_Log::latest()->first();
+        return view('dashboard.rawat-jalan', compact('RJ_02_A_Kunjungan_Baru', 'RJ_02_A_Kunjungan_Baru_Log',
+        'RJ_02_B_Masuk_Ruang', 'RJ_02_B_Masuk_Ruang_Log', 'RJ_04_Pemeriksaan_Tanda_Tanda_Vital', 'RJ_04_Pemeriksaan_Tanda_Tanda_Vital_Log',
+        'RJ_06_Riwayat_Perjalanan_Penyakit', 'RJ_06_Riwayat_Perjalanan_Penyakit_Log', 'RJ_10_Laboratory', 'RJ_10_Laboratory_Log',
+        'RJ_12_Diagnosis', 'RJ_12_Diagnosis_Log', 'RJ_14_Tindakan_Konseling', 'RJ_14_Tindakan_Konseling_Log',
+        'RJ_18_Kondisi_Saat_Meninggalkan_Fasyankes', 'RJ_18_Kondisi_Saat_Meninggalkan_Fasyankes_Log'));
     }
     // ====================    KYC    ====================
         public function kyc()
@@ -87,8 +85,8 @@ class AuthController extends Controller
                 $logKyc->save();
 
                 // Nama dan NIK petugas
-                $agent_name = 'ALFIN MAHADI';
-                $agent_nik = '10004804437';
+                $agent_name = 'Gusti Reka Kusuma';
+                $agent_nik = '10013576199';
             }elseif (auth()->user()->practioner == null) {
                 return response()->json(['message' => 'Anda tidak diperbolehkan mengisi KYC karena practioner Satusehat anda belum terdaftar, silahkan hubungi IT'], 403);
                 $logKyc = new LogKyc();

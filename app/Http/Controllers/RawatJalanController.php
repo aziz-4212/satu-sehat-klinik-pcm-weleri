@@ -381,10 +381,10 @@ class RawatJalanController extends Controller
                 // $registrasi_pasien_terakhir = 23;
                 $registrasi_pasien = Rekam::where('id', $registrasi_pasien_terakhir)->first();
                 if ($registrasi_pasien == null) {
-                    $log_encounter = new RJ_02_A_Kunjungan_Baru_Log();
-                    $log_encounter->rekam_id = $registrasi_pasien_terakhir;
-                    $log_encounter->ket_log = "Data Rekam Medis Tidak ditemukan";
-                    $log_encounter->save();
+                    // $log_encounter = new RJ_02_A_Kunjungan_Baru_Log();
+                    // $log_encounter->rekam_id = $registrasi_pasien_terakhir;
+                    // $log_encounter->ket_log = "Data Rekam Medis Tidak ditemukan";
+                    // $log_encounter->save();
                     return response()->json([
                         'rekam_id' => $registrasi_pasien_terakhir,
                         'message' => "Data Rekam Medis Tidak ditemukan",
