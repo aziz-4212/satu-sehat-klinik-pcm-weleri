@@ -85,8 +85,8 @@ class AuthController extends Controller
                 $logKyc->save();
 
                 // Nama dan NIK petugas
-                $agent_name = 'Gusti Reka Kusuma';
-                $agent_nik = '10013576199';
+                $agent_name = 'TUTIK NUR FAIZAH';
+                $agent_nik = '10016656663';
             }elseif (auth()->user()->practioner == null) {
                 return response()->json(['message' => 'Anda tidak diperbolehkan mengisi KYC karena practioner Satusehat anda belum terdaftar, silahkan hubungi IT'], 403);
                 $logKyc = new LogKyc();
